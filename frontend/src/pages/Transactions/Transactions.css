@@ -1,0 +1,70 @@
+.transaction-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 3rem
+}
+
+.transaction-filter{
+  flex: 4;
+  display: flex;
+  gap: 0.5rem;
+  padding-right: 5rem;
+}
+
+.transaction-filter input {
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+.search-bar{
+  position: relative;
+  width: 100%;
+}
+
+.search-bar input[type="search"] {
+  padding-right: 3rem;
+}
+
+.transaction-filter input {
+  padding: 0.75rem 1rem;
+}
+
+
+.transaction-filter select,
+.transaction-filter input,
+.date-filter input{
+  border-radius: 0.5rem;
+  border: 2px solid #800000;
+}
+
+.transaction-filter select{
+  padding: 0.75rem;
+  width: 30%;
+}
+
+.search-icon {
+  position: absolute;
+  top: 22%;
+  right: 1rem;
+  font-size: 1.8rem;
+  color: #555555;
+}
+
+.filter-status {
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem; 
+  background: url('data:image/svg+xml;utf8,<svg fill="%23800000" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 1rem center;
+  background-size: 1.5rem;
+}
+
+.transaction-buttons {
+  flex: 1;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}

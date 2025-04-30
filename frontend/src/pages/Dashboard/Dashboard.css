@@ -1,0 +1,121 @@
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.recent-transactions h2,
+.area-header h2{
+  font-size: 1.5rem
+}
+
+.recent-transactions h2,
+.area-header h2
+.recentTrans-icon,
+.area-icon,
+.quick-icon{
+  color: #800000;
+}
+
+.recentTrans-icon,
+.area-icon,
+.quick-icon{
+  font-size: 1.8rem;
+}
+
+.chart-and-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 400px;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.area-chart {
+  flex: 3;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.area-chart h2{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quick-actions {
+  flex: 1;
+  background: #f4f4f4;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 2px solid #800000;
+}
+
+.area-chart,
+.quick-actions{
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.area-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  align-self: baseline;
+}
+
+.area-header h2,
+.quick-actions h2{
+  font-size: 1.5rem;
+  color: #800000;
+}
+
+.filter-buttons button{
+  background: #cccccc;
+  color: #000000;
+  padding: 0.65rem 0.8rem;
+  margin-left: 0.5rem;
+  border: none;
+}
+
+.filter-buttons button:hover,
+.filter-buttons button.active{
+  background: #800000;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.quick-actions h2{
+  text-align: center;
+  margin: 0.5rem auto 0 auto;
+}
+
+.action-buttons {
+  display: inline-block;
+  justify-content: center;
+  margin: 1.5rem auto;
+  padding: 1rem;
+}
+
+.stats-grid,
+.chart-and-action{
+  margin: 1rem 0 3rem 0;
+}
+
+.recent-transactions {
+  margin-bottom: 2rem;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+.recent-transactions h2{
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+/*Table Style in Global Styles*/

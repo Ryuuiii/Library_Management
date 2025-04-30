@@ -1,0 +1,46 @@
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0.5rem 0.75rem ;
+}
+
+table th,
+table td{
+  background-color: blue;
+  padding: 0.7rem;
+  text-align: left;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+table th{
+  font-size: 1.08rem;
+  color: #800000;
+}
+
+table td{
+  font-size: 0.9rem;
+}
+
+.status-cell {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+table th,
+table tbody tr:last-child td  {
+  border-bottom: 2px solid #333333;
+}
+
+table th:first-child,
+table td:first-child {
+  border-left: 2px solid #333333;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 2px solid #333333;
+}
