@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Books from './pages/Books/Books';
 import Borrower from './pages/Borrower/Borrower';
 import Transactions from './pages/Transactions/Transactions';
+import BorrowerDashboard from './pages/BorrowerDashboard/BorrowerDashboard';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/books' element={<Books />} />
         <Route path='/borrower' element={<Borrower />} />
         <Route path='/transactions' element={<Transactions />} />
+        <Route path='/borrower-dashboard' element={<BorrowerDashboard />} />
       </Routes>
    </Router>
   );
