@@ -1,13 +1,10 @@
 import React from 'react'
-import Layout from '../../components/Layout'
-import Table from '../../components/Table/Table';
+import Layout from '../../components/Layout/Layout'
+import BorrowerTable from '../../components/Table/BorrowerTable';
 import { IoMdSearch } from "react-icons/io";
 import './Borrower.css'
 
-const borrowerColumns = [ 'Borrower ID', 'Name', 'Email Address', 'Borrower Type ID', 'Department ID' ,'Year Level' ]
-
 const Borrower = () => {
-  
   return (
     <Layout title='Borrower Management'>
       <div className='borrower-content'>
@@ -37,8 +34,8 @@ const Borrower = () => {
           </div>
         </header>
 
-        <Table columns={borrowerColumns}/>
 
+        <BorrowerTable />
       </div>
     </Layout>
   )

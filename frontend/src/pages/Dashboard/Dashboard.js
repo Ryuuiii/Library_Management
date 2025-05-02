@@ -1,46 +1,24 @@
 import React, { useState } from 'react'
-import Layout from '../../components/Layout'
-import Table from '../../components/Table/Table';
+import Layout from '../../components/Layout/Layout'
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import StatsCard from '../../components/StatsCard/StatsCard'
-import BookForm from '../../components/Forms/BookForm';
 import { FaBook, FaBookReader, FaBookmark, FaClock, FaChartArea } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css'
-import TransactionForm from '../../components/Forms/TransactionForm';
 
-const transactionColumns = ['Transaction ID', 'Borrower ID', 'Book ID', 'Transaction Type', 'Borrow Date', 'Due Date', 'Return Date', 'Status']
-const data = [];
+const data = [
+  { name: "Monday", Borrowed: 20, Returned: 5 },
+  { name: "Tuesday", Borrowed: 5, Returned: 3 },
+  { name: "Wednesday", Borrowed: 10, Returned: 15 },
+  { name: "Thursday", Borrowed: 15, Returned: 5 },
+  { name: "Friday", Borrowed: 12, Returned: 10 },
+  { name: "Saturday", Borrowed: 6, Returned: 2 },
+  { name: "Sunday", Borrowed: 2, Returned: 6 }
+]
 
 const Dashboard = () => {
     const [activeFilter, setActiveFilter] = useState('7days');
-    const [showBookForm, setShowBookForm] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [showTransactionForm, setShowTransactionForm] = useState(false)
-
-
-    const handleBookSubmit = (data) => {
-      if(editMode) {
-        //Update logic here
-        console.log('Updating book:', data);
-      } else {
-        //Add logic here
-        console.log('Adding new book:', data);
-      }
-      setShowBookForm(false);
-      setEditMode(false);
-      setSelectedBook(null);
-    }
-
-    const handleTransactionSubmit = (data) => {
-      console.log("Transaction submitted:", data);
-      // Send to API or add to state here
-      setShowTransactionForm(false);
-    };
-
-
 
   return (
     <Layout title='Dashboard'>
@@ -114,34 +92,16 @@ const Dashboard = () => {
         <div className='quick-actions'>
           <h2>⚡Quick Actions</h2>
           <div className='action-buttons'>
-            <ActionButton label='+ Add New Book' onClick={()=> { setEditMode(false); setSelectedBook(null); setShowBookForm(true)}}/>
-            <ActionButton label='+ Add Transaction' onClick={() => setShowTransactionForm(true)}/>
+            <ActionButton label='+ Add New Book'/>
+            <ActionButton label='+ Add Transaction'/>
           </div>
         </div>
       </section>
 
       <section className='recent-transactions'>
         <h2><BsFileEarmarkBarGraphFill className='recenTrans-icon'/>Recent Transactions</h2>
-        <Table columns={transactionColumns}/>
       </section>
     </div>
-
-    {showBookForm && (
-        <BookForm
-          mode={editMode ? 'edit' : 'add'}
-          initialData={selectedBook || {}}
-          onSubmit={handleBookSubmit}
-          onClose={() => setShowBookForm(false)}
-        />
-      )}
-
-    {showTransactionForm && (
-      <TransactionForm
-        onSubmit={handleTransactionSubmit}
-        onClose={() => setShowTransactionForm(false)}
-      />
-    )}
-
   </Layout>
   );
 }

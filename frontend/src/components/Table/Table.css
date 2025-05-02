@@ -22,7 +22,7 @@ table td{
   font-size: 0.9rem;
 }
 
-.status-cell {
+.last-cell {
   position: relative;
   display: flex;
   justify-content: space-between;
