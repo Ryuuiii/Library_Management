@@ -4,8 +4,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Books from './pages/Books/Books';
 import Borrower from './pages/Borrower/Borrower';
 import Transactions from './pages/Transactions/Transactions';
-import BorrowerDashboard from './pages/BorrowerDashboard/BorrowerDashboard';
-
+import BorrowerDashboard from './borrower UI/Books/Books'
 function App() {
   return (
    <Router>
