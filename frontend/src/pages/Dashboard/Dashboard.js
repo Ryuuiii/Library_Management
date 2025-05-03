@@ -25,13 +25,14 @@ const Dashboard = () => {
   
 
   useEffect(() => {
-    // 🔧 Backend: Paki-setup ito to return book statistics (total, borrowed, available, overdue)
+    // 🔧 TODO: Paki-setup ito to return book statistics (total, borrowed, available, overdue)
   })
 
 
 
 
-  useEffect(() => {  // 🔧 Backend: Paki-setup ito to return recent transactions (limit = 5)
+  useEffect(() => {  // 🔧 TODO: Paki-setup ito to return recent transactions (limit = 5)
+  
   })
 
   const handleEditTransaction = () => {

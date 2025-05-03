@@ -16,27 +16,25 @@ const Books = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1)
 
-
   useEffect(() => {
-    //Backend fetch the books
+    // TODO: Fetch books from backend API once available
+    // 🚧 GET /api/books with support for search, filters, 
+    // and pagination (kahit 10 rows per page siguro)
   })
 
-  useEffect(() => {
-    //Fetch All books from the backend
-  })
 
   const handleAddBook = () => {
-    //Add book to the backend
+      // TODO: Send POST request to backend to add a book
     setIsBookOpen(false)
     setCurrentPage(1)
   }
 
   const handleEditBook = () => {
-    //Edit book in the backend
+      // TODO: Send PUT  request to backend to update book by ID
   }
 
   const handleDeleteBook = () => {
-    //Delete book in the backend
+     // TODO: Send DELETE request to backend to remove book by ID
   }
 
 
@@ -65,9 +63,9 @@ const Books = () => {
 
             <select className='program' value={selectedProgram} onChange={(e) => {setSelectedProgram(e.target.value); setCurrentPage(1)}}>
               <option value="all">All Program</option>
-              <option value="BSCS">BSCS</option>
-              <option value="BSIT">BSIT</option>
-              <option value="BSEMC">BSEMC</option>
+              <option value="CS01">CS01</option>
+              <option value="IT01">IT01</option>
+              <option value="EMC01">EMC01</option>
             </select>
           </div>
 
