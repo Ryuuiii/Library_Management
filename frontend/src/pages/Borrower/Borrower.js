@@ -3,35 +3,44 @@ import Layout from '../../components/Layout/Layout'
 import BorrowerTable from '../../components/Table/BorrowerTable';
 import { IoMdSearch } from "react-icons/io";
 import './Borrower.css'
+import Pagination from '../../components/Pagination/Pagination';
 
 const Borrower = () => {
-  const [filteredBorrower, setFilteredBorrower] = useState([])
+  const [borrowers, setBorrowers] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedYearLevel, setSelectedYearLevel] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-
-
+  const [selectedYearLevel, setSelectedYearLevel] = useState('all');
+  const [selectedType, setSelectedType] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
-    //Filter by search or dropdown selection 
-    //Maya ko nagawin katamad pota
-  })
+    // TODO: Fetch books from backend API once available
+    // 🚧 GET with support for search, filters, 
+    // and pagination (kahit 10 rows per page siguro)
+  }, [searchQuery, selectedType, selectedYearLevel, currentPage])
 
   const handleEdit = () =>{
-    //Edit Borrower
+     // TODO: Send PUT  request to backend to update Borrower by ID
   }
 
   const handleDelete = () => {
-    //Delete Borrower
+    // TODO: Send DELETE  request to backend to delete Borrower by ID
   }
 
+  //MAG-ADD BA TAYO NG BORROWER O LIKE FIXED NA YUN SA DATABASE NA LANG AGAD
+  //KUNG OO NEED KO NG BUTTON AT NG FORM PARA DON
   return (
     <Layout title='Borrower Management'>
       <div className='borrower-content'>
       <header className='borrower-header'>
           <div className='borrower-filter'>
             <div className='search-bar'>
-              <input type="search" placeholder='Search by name or ID . . . . . . .' />
+              <input 
+                type="search" 
+                placeholder='Search by name or ID . . . . . . .' 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
               <IoMdSearch className='search-icon'/>
             </div>
             
@@ -56,8 +65,15 @@ const Borrower = () => {
 
 
         <BorrowerTable 
+          borrowers={borrowers}
           onDeleteBorrower={handleDelete}
           onEditBorrower={handleEdit}
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage}
         />
       </div>
     </Layout>

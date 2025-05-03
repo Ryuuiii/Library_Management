@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DotMenu from '../3DotMenu/DotMenu'
-import './Table.css'
 import BookForm from '../Forms/BookForm';
+import './Table.css'
 
 const BookTable = ({ books, onDeleteBook, onEditBook}) => {
   const [editBook, setEditBook] = useState(false);

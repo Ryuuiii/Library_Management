@@ -20,13 +20,11 @@ const Books = () => {
     // TODO: Fetch books from backend API once available
     // 🚧 GET /api/books with support for search, filters, 
     // and pagination (kahit 10 rows per page siguro)
-  })
+  }, [searchQuery, selectedProgram, selectedYearLevel, currentPage])
 
 
   const handleAddBook = () => {
       // TODO: Send POST request to backend to add a book
-    setIsBookOpen(false)
-    setCurrentPage(1)
   }
 
   const handleEditBook = () => {

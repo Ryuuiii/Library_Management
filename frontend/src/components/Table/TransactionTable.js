@@ -5,13 +5,12 @@ import TransactionForm from '../Forms/TransactionForm';
 
 const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
   const [editTransaction, setEditTransaction] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const handleEditTransaction = (transaction) => {
     setSelectedTransaction(transaction)
     setEditTransaction(true)
   }
-
 
   const handleDeleteTransaction = async (transactionID) => {
     if(window.confirm("Are you sure you want to delete this transaction?")) {
@@ -46,9 +45,7 @@ const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
                 <td>{transaction.dueDate}</td>
                 <td>{transaction.returnDate}</td>
                 <td className='last-cell'>
-                  <span>
-                    {transaction.status} 
-                  </span>
+                  <span>{transaction.status}</span>
                   <DotMenu
                     onEditTransaction={() => handleEditTransaction(transaction)}
                     onDelete={() => handleDeleteTransaction(transaction.transactionID)}

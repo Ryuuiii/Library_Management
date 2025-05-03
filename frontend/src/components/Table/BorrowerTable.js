@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import DotMenu from '../3DotMenu/DotMenu'
-import './Table.css'
 import BorrowerForm from '../Forms/BorrowerForm';
+import './Table.css'
 
-const BorrowerTable = ({onDeleteBorrower, onEditBorrower}) => {
+const BorrowerTable = ({borrowers, onDeleteBorrower, onEditBorrower}) => {
     const [editBorrower, setEditBorrower] = useState(false);
     const [selectedBorrower, setSelectedBorrower] = useState(null);
 
@@ -13,7 +13,7 @@ const BorrowerTable = ({onDeleteBorrower, onEditBorrower}) => {
   }
 
   const handleDelete = async (borrowerID) => {
-    if(window.confirm("Are you sure you want to delete this book?")) {
+    if(window.confirm("Are you sure you want to delete this borrower?")) {
       await onDeleteBorrower(borrowerID)
     }
   }
@@ -32,20 +32,30 @@ const BorrowerTable = ({onDeleteBorrower, onEditBorrower}) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>0123004567</td>
-            <td>ytrose2704val@student.fatima.edu.ph</td>
-            <td>John Dela</td>
-            <td>ST01</td>
-            <td>BSCS</td>
-            <td className='last-cell'>
-              <span>2</span>
-              <DotMenu
-                onEdit={() => handleEdit()}
-                onDelete={() => handleDelete()}
-              />
-            </td>
-          </tr>
+          {borrowers.length > 0 ? (
+            borrowers.map((borrower) => (
+              <tr key={borrower.borrowerID}>
+                <td>{borrower.borrowerID}</td>
+                <td>{borrower.emailAddress}</td>
+                <td>{borrower.fullName}</td>
+                <td>{borrower.borrowerTypeID}</td>
+                <td>{borrower.programName}</td>
+                <td className='last-cell'>
+                  <span>{borrower.yearLevel}</span>
+                  <DotMenu
+                    onEdit={() => handleEdit()}
+                    onDelete={() => handleDelete()}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan='8' className='no-data'>
+                No Borrower Available
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 
