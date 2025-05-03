@@ -1,16 +1,15 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = ""; 
-$database = "library";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "library";
 
-// Create connection
-$conn = new mysqli($host, $user, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
-    die(json_encode([
-        "error" => "Connection failed: " . $conn->connect_error
-    ]));
+    error_log("Database connection error: " . $conn->connect_error);
+    http_response_code(500);
+    echo json_encode(["error" => "Database connection failed"]);
+    exit();
 }
 ?>

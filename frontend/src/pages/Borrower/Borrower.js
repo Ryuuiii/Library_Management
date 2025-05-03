@@ -5,6 +5,7 @@ import { IoMdSearch } from "react-icons/io";
 import './Borrower.css'
 import Pagination from '../../components/Pagination/Pagination';
 
+
 const Borrower = () => {
   const [borrowers, setBorrowers] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
