@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $user = "root";
-$password = ""; // Change if your MySQL password is set
-$database = "library_physical_model_data";
+$password = ""; 
+$database = "library";
 
 // Create connection
 $conn = new mysqli($host, $user, $password, $database);
