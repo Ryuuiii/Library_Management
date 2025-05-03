@@ -34,7 +34,7 @@ const BookTable = ({ books, onDeleteBook, onEditBook}) => {
           </tr>
         </thead>
         <tbody>
-        {books.length > 0 ? (
+          {books.length > 0 ? (
             books.map((book) => (
               <tr key={book.bookID}>
                 <td>{book.bookID}</td>
@@ -45,7 +45,7 @@ const BookTable = ({ books, onDeleteBook, onEditBook}) => {
                 <td>{book.programID}</td>
                 <td>{book.yearLevel}</td>
                 <td className="last-cell">
-                  {book.availableCopies}
+                  <span>{book.availableCopies}</span>
                   <DotMenu
                     onEdit={() => handleEditBook(book)}
                     onDelete={() => handleDeleteBook(book.bookID)}
