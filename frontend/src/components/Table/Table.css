@@ -44,3 +44,8 @@ table th:last-child,
 table td:last-child {
   border-right: 2px solid #333333;
 }
+
+.no-data{
+  text-align: center;
+  padding: 1rem 0;
+}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css'
-const BookForm = ({ mode = "add", initialData = {}, onSubmit, onClose }) => {
+
+const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
   const [formData, setFormData] = useState({
     bookID: "",
     title: "",
@@ -11,6 +12,7 @@ const BookForm = ({ mode = "add", initialData = {}, onSubmit, onClose }) => {
     programID: "",
     yearLevel: "",
     availableCopies: "",
+    ...initialData
   });
 
   useEffect(() => {
@@ -21,6 +23,8 @@ const BookForm = ({ mode = "add", initialData = {}, onSubmit, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    //Logic for Adding and Updating Books 
   };
 
   const handleChange = (e) => {
