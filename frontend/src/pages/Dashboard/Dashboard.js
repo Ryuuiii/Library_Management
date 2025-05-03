@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Layout from '../../components/Layout/Layout'
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import StatsCard from '../../components/StatsCard/StatsCard'
+import TransactionTable from '../../components/Table/TransactionTable'
 import { FaBook, FaBookReader, FaBookmark, FaClock, FaChartArea } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
@@ -100,6 +101,7 @@ const Dashboard = () => {
 
       <section className='recent-transactions'>
         <h2><BsFileEarmarkBarGraphFill className='recenTrans-icon'/>Recent Transactions</h2>
+        <TransactionTable/>
       </section>
     </div>
   </Layout>

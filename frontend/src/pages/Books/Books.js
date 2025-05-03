@@ -8,7 +8,7 @@ import BookForm from '../../components/Forms/BookForm';
 
 const Books = () => {
   const [books, setBooks] = useState([])
-  const [ isBookOpen, setIsBookOpen ] = useState(false);
+  const [isBookOpen, setIsBookOpen ] = useState(false);
   const [filteredBooks, setFilteredBooks] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedYearLevel, setSelectedYearLevel] = useState('');

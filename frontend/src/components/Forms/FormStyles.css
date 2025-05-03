@@ -26,9 +26,9 @@
   margin-bottom: 1.5rem;
 }
 
-.close-icon {
+.close-icon,
+.close-btn {
   position: absolute;
-  top: 7.5rem;
   left: 82.1%;
   font-size: 2rem;
   color: #800000;
@@ -38,7 +38,16 @@
   background: transparent;
 }
 
-.close-icon:hover{
+.close-icon {
+  top: 7.5rem;
+}
+
+.close-btn {
+  top: 9.5rem;
+}
+
+.close-icon:hover,
+.close-btn:hover{
   background: #cccccc;
 }
 
