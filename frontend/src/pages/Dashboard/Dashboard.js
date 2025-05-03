@@ -15,41 +15,75 @@ const Dashboard = () => {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('7days'); 
   const [filteredData, setFilteredData] = useState([]); 
-  const [transactions, setTransations] = useState([])
+  const [transactions, setTransactions] = useState([]);
   const [bookStats, setBookStats] = useState({
     total: 0,
     borrowed: 0,
     available: 0,
     overdue: 0
-  })
+  });
+  const [userRole, setUserRole] = useState(''); 
+  const [loading, setLoading] = useState(true); 
+  useEffect(() => {
+    const storedRole = localStorage.getItem('userRole');
+    if (storedRole) {
+      setUserRole(storedRole);
+      setLoading(false);
+    } else {
+      fetchUserRole();
+    }
+  }, []);
+  
+  
+  const fetchUserRole = async () => {
+    try {
+      console.log('Fetching user role...');
+      const response = await fetch('http://localhost/api/getUserRole.php', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      console.log('Response:', response);
+      const data = await response.json();
+      console.log('Fetched user role:', data);
+      if (response.ok) {
+        setUserRole(data.role);
+      } else {
+        console.error('Failed to fetch user role:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
 
   useEffect(() => {
-    // 🔧 TODO: Paki-setup ito to return book statistics (total, borrowed, available, overdue)
-  })
+    // 🔧 TODO: Fetch book statistics (total, borrowed, available, overdue)
+  }, []);
 
-
-
-
-  useEffect(() => {  // 🔧 TODO: Paki-setup ito to return recent transactions (limit = 5)
-  
-  })
+  useEffect(() => {
+    // 🔧 TODO: Fetch recent transactions (limit = 5)
+  }, []);
 
   const handleEditTransaction = () => {
-    //handle the edit transactions logic api
+    // Handle the edit transactions logic API
+  };
+
+  const handleDeleteTransaction = () => {
+    // Handle delete transactions logic API
+  };
+
+  if (loading) {
+    console.log('Loading user role...');
+    return <div>Loading...</div>;
   }
-
-
-  const handleDeleteTransaction = () =>{
-    //handle delete transactions logic api
-  }
-
 
   return (
-    <Layout title='Dashboard'>
-      <div className='dashboard-content'> 
-        <div className='opening'>
-          <h1>Welcome, Admin!</h1>
+    <Layout title="Dashboard">
+      <div className="dashboard-content">
+        <div className="opening">
+        <h1>Welcome, {userRole === 'admin' ? 'Admin' : userRole === 'borrower' ? 'Borrower' : 'User'}!</h1>
         </div>
         <section className="stats-grid">
           <StatsCard icon={<FaBook />} label="Total Books" value={bookStats.total} color="#4B0082" />
@@ -58,11 +92,11 @@ const Dashboard = () => {
           <StatsCard icon={<FaClock />} label="Overdue Books" value={bookStats.overdue} color="#FF0000" />
         </section>
 
-        <section className='chart-and-action'>
-          <div className='area-chart'>
-            <div className='area-header'>
-              <h2><FaChartArea className='area-icon'/> Borrow and Return Activity</h2>
-              <div className='filter-buttons'>
+        <section className="chart-and-action">
+          <div className="area-chart">
+            <div className="area-header">
+              <h2><FaChartArea className="area-icon" /> Borrow and Return Activity</h2>
+              <div className="filter-buttons">
                 <button onClick={() => setActiveFilter('3months')} className={activeFilter === '3months' ? 'active' : ''}>Last 3 months</button>
                 <button onClick={() => setActiveFilter('30days')} className={activeFilter === '30days' ? 'active' : ''}>Last 30 days</button>
                 <button onClick={() => setActiveFilter('7days')} className={activeFilter === '7days' ? 'active' : ''}>Last 7 days</button>
@@ -113,17 +147,17 @@ const Dashboard = () => {
             )}
           </div>
 
-          <div className='quick-actions'>
+          <div className="quick-actions">
             <h2>⚡Quick Actions</h2>
-            <div className='action-buttons'>
-              <ActionButton label='+ Add New Book' onClick={() => setIsBookFormOpen(true)} />
-              <ActionButton label='+ Add Transaction' onClick={() => setIsTransactionFormOpen(true)} />
+            <div className="action-buttons">
+              <ActionButton label="+ Add New Book" onClick={() => setIsBookFormOpen(true)} />
+              <ActionButton label="+ Add Transaction" onClick={() => setIsTransactionFormOpen(true)} />
             </div>
           </div>
         </section>
 
-        <section className='recent-transactions'>
-          <h2><BsFileEarmarkBarGraphFill className='recenTrans-icon'/>Recent Transactions</h2>
+        <section className="recent-transactions">
+          <h2><BsFileEarmarkBarGraphFill className="recenTrans-icon" />Recent Transactions</h2>
           <TransactionTable
             transactions={transactions} 
             onDeleteTransaction={handleDeleteTransaction}

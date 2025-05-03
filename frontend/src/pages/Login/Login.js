@@ -20,23 +20,24 @@ const Login = () => {
     e.preventDefault();
     setLoginError('');
     setIsLoading(true);
-
+  
     console.log("Login data being sent:", loginData);
-
+  
     try {
       const response = await fetch('http://localhost/api/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData)
       });
-
+  
       const data = await response.json();
       console.log("Response data:", data);
-
+  
       if (response.ok) {
-        if (data.role === 'admin') {
-          navigate('/dashboard');
-        } else if (data.role === 'borrower') {
+        const role = data.role?.toLowerCase();
+  
+        if (role === 'admin' || role === 'borrower') {
+          localStorage.setItem('userRole', role);
           navigate('/dashboard');
         } else {
           setLoginError('Unknown role.');
@@ -59,6 +60,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <main className='login-page'>
