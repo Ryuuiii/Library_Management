@@ -1,4 +1,8 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+error_log(print_r($input, true));
 // Show PHP errors during development
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -11,11 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// Set headers
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: POST');
 
 // Get and parse input
 $input = json_decode(file_get_contents("php://input"), true);

@@ -9,8 +9,8 @@ const Login = () => {
     loginID: '',
     password: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ Define handleChange correctly
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginData((prev) => ({ ...prev, [name]: value }));
@@ -19,9 +19,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError('');
+    setIsLoading(true);
+
+    console.log("Login data being sent:", loginData);
 
     try {
-      const response = await fetch('/api/login.php', {
+      const response = await fetch('http://localhost/api/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData)
@@ -34,16 +37,26 @@ const Login = () => {
         if (data.role === 'admin') {
           navigate('/dashboard');
         } else if (data.role === 'borrower') {
-          navigate('/borrower-dashboard');
+          navigate('/dashboard');
         } else {
           setLoginError('Unknown role.');
         }
       } else {
-        setLoginError(data.error || 'Login failed');
+        if (response.status === 400) {
+          setLoginError('Invalid input. Please check your ID and password.');
+        } else if (response.status === 401) {
+          setLoginError('Incorrect ID or password.');
+        } else if (response.status === 500) {
+          setLoginError('Server error. Please try again later.');
+        } else {
+          setLoginError(data.error || 'An unexpected error occurred.');
+        }
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      setLoginError('Server error. Try again later.');
+      setLoginError('Unable to connect to the server. Please check your internet connection or try again later.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,7 +72,7 @@ const Login = () => {
             required 
             placeholder='Enter Your ID Number' 
             value={loginData.loginID}
-            onChange={handleChange} // ✅ Now this is defined
+            onChange={handleChange}
           />
           <label>Password:</label>
           <input 
@@ -68,9 +81,10 @@ const Login = () => {
             required 
             placeholder='Enter Your Password' 
             value={loginData.password}
-            onChange={handleChange} // ✅ Now this is defined
+            onChange={handleChange}
           />
           <button className='login-button' type='submit'>LOGIN</button>
+          {isLoading && <p>Loading...</p>}
           {loginError && <p className='error-message'>{loginError}</p>}
         </form>
       </div>
