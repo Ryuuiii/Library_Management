@@ -1,5 +1,6 @@
-// src/components/Table/Pagination.jsx
 import React from 'react';
+import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight  } from "react-icons/md";
+
 import './Pagination.css';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -17,8 +18,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button 
         onClick={() => onPageChange(1)} 
         disabled={currentPage === 1}
+        className='arrow-icon'
       >
-        &laquo;
+        <MdKeyboardDoubleArrowLeft />
       </button>
 
       {visiblePages.map((page) => (
@@ -34,8 +36,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button 
         onClick={() => onPageChange(totalPages)} 
         disabled={currentPage === totalPages}
+        className='arrow-icon'
       >
-        &raquo;
+        <MdKeyboardDoubleArrowRight/>
       </button>
     </div>
   );

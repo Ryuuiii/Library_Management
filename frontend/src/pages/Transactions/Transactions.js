@@ -32,7 +32,7 @@ const Transactions = () => {
           </div>
         </header>
 
-        <TransactionTable/>
+        <TransactionTable />
       </div>
     </Layout>
   );

@@ -1,42 +1,83 @@
-import React from 'react'
+import React, { useState } from 'react'
 import DotMenu from '../3DotMenu/DotMenu'
 import './Table.css'
+import TransactionForm from '../Forms/TransactionForm';
 
-const Table = () => {
+const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
+  const [editTransaction, setEditTransaction] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(false);
+
+  const handleEditTransaction = (transaction) => {
+    setSelectedTransaction(transaction)
+    setEditTransaction(true)
+  }
+
+
+  const handleDeleteTransaction = async (transactionID) => {
+    if(window.confirm("Are you sure you want to delete this transaction?")) {
+      await onDeleteTransaction(transactionID)
+    }
+  }
+
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Transaction ID</th>
-          <th>Borrower ID</th>
-          <th>Book ID</th>
-          <th>Transaction Type</th>
-          <th>Borrow Date</th>
-          <th>Due Date</th>
-          <th>Return Date</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>T001</td>
-          <td>01230004567</td>
-          <td>LRC-I-C-7053</td>
-          <td>Borrowed</td>
-          <td>2025-04-01</td>
-          <td>2025-04-03</td>
-          <td>2025-04-05</td>
-          <td className='last-cell'>
-            <span>
-              Returned <br/>
-              [Overdue]
-            </span>
-            <DotMenu/>
-          </td>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Borrower ID</th>
+            <th>Book ID</th>
+            <th>Transaction Type</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.length > 0 ? (
+            transactions.map((transaction) => (
+              <tr key={transaction.transactionID}>
+                <td>{transaction.transactionID}</td>
+                <td>{transaction.borrowerID}</td>
+                <td>{transaction.bookID}</td>
+                <td>{transaction.transactionType}</td>
+                <td>{transaction.borrowDate}</td>
+                <td>{transaction.dueDate}</td>
+                <td>{transaction.returnDate}</td>
+                <td className='last-cell'>
+                  <span>
+                    {transaction.status} 
+                  </span>
+                  <DotMenu
+                    onEditTransaction={() => handleEditTransaction(transaction)}
+                    onDelete={() => handleDeleteTransaction(transaction.transactionID)}
+                  />
+                </td>
+            </tr>
+            ))
+          ):(
+            <tr>
+              <td colSpan="8" className='no-data'>
+                No Transaction Available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-        </tr>
-      </tbody>
-    </table>
+      {editTransaction && (
+        <TransactionForm 
+          onClose={() => setEditTransaction(false)}
+          mode='edit'
+          initialData={selectedTransaction}
+          onSubmit={(updatedTransaction) => {
+            onEditTransaction(updatedTransaction)
+            setEditTransaction(false)
+          }}
+        />
+      )}
+    </div>
   )
 }
 

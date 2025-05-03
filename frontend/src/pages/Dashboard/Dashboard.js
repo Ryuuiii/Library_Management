@@ -13,43 +13,36 @@ import './Dashboard.css';
 const Dashboard = () => {
   const [isBookFormOpen, setIsBookFormOpen] = useState(false);
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('7days'); // Default filter
-  const [filteredData, setFilteredData] = useState([]); // State for filtered chart data
+  const [activeFilter, setActiveFilter] = useState('7days'); 
+  const [filteredData, setFilteredData] = useState([]); 
+  const [transactions, setTransations] = useState([])
+  const [bookStats, setBookStats] = useState({
+    total: 0,
+    borrowed: 0,
+    available: 0,
+    overdue: 0
+  })
+  
 
-  // Example data for different filters
-  const data7Days = [
-    { name: "Monday", Borrowed: 20, Returned: 5 },
-    { name: "Tuesday", Borrowed: 5, Returned: 3 },
-    { name: "Wednesday", Borrowed: 10, Returned: 15 },
-    { name: "Thursday", Borrowed: 15, Returned: 5 },
-    { name: "Friday", Borrowed: 12, Returned: 10 },
-    { name: "Saturday", Borrowed: 6, Returned: 2 },
-    { name: "Sunday", Borrowed: 2, Returned: 6 }
-  ];
-
-  const data30Days = [ //Grouped by weekly
-    { name: "Week 1", Borrowed: 50, Returned: 20 },
-    { name: "Week 2", Borrowed: 40, Returned: 25 },
-    { name: "Week 3", Borrowed: 60, Returned: 30 },
-    { name: "Week 4", Borrowed: 70, Returned: 35 }
-  ];
-
-  const data3Months = [ 
-    { name: "February", Borrowed: 150, Returned: 100 },
-    { name: "March", Borrowed: 67, Returned: 170 },
-    { name: "April", Borrowed: 140, Returned: 90 }
-  ];
-
-  // Update filtered data based on the active filter
   useEffect(() => {
-    if (activeFilter === '7days') {
-      setFilteredData(data7Days);
-    } else if (activeFilter === '30days') {
-      setFilteredData(data30Days);
-    } else if (activeFilter === '3months') {
-      setFilteredData(data3Months);
-    }
-  }, [activeFilter]); // Re-run whenever the active filter changes
+    // 🔧 Backend: Paki-setup ito to return book statistics (total, borrowed, available, overdue)
+  })
+
+
+
+
+  useEffect(() => {  // 🔧 Backend: Paki-setup ito to return recent transactions (limit = 5)
+  })
+
+  const handleEditTransaction = () => {
+    //handle the edit transactions logic api
+  }
+
+
+  const handleDeleteTransaction = () =>{
+    //handle delete transactions logic api
+  }
+
 
   return (
     <Layout title='Dashboard'>
@@ -58,10 +51,10 @@ const Dashboard = () => {
           <h1>Welcome, Admin!</h1>
         </div>
         <section className="stats-grid">
-          <StatsCard icon={<FaBook />} label="Total Books" value="1520" color="#4B0082" />
-          <StatsCard icon={<FaBookReader />} label="Borrowed Books" value="820" color="#FFA500" />
-          <StatsCard icon={<FaBookmark />} label="Available Books" value="650" color="#008000" />
-          <StatsCard icon={<FaClock />} label="Overdue Books" value="50" color="#FF0000" />
+          <StatsCard icon={<FaBook />} label="Total Books" value={bookStats.total} color="#4B0082" />
+          <StatsCard icon={<FaBookReader />} label="Borrowed Books" value={bookStats.borrowed} color="#FFA500" />
+          <StatsCard icon={<FaBookmark />} label="Available Books" value={bookStats.available} color="#008000" />
+          <StatsCard icon={<FaClock />} label="Overdue Books" value={bookStats.overdue} color="#FF0000" />
         </section>
 
         <section className='chart-and-action'>
@@ -92,7 +85,7 @@ const Dashboard = () => {
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
-                    dataKey="name" // Dynamically updates based on the filtered data
+                    dataKey="name" 
                     label={{
                       value: activeFilter === '3months' ? 'Months' : activeFilter === '30days' ? 'Weeks' : 'Days',
                       position: 'outsideBottomCenter',
@@ -130,7 +123,11 @@ const Dashboard = () => {
 
         <section className='recent-transactions'>
           <h2><BsFileEarmarkBarGraphFill className='recenTrans-icon'/>Recent Transactions</h2>
-          <TransactionTable/>
+          <TransactionTable
+            transactions={transactions} 
+            onDeleteTransaction={handleDeleteTransaction}
+            onEditTransaction={handleEditTransaction}
+          />
         </section>
       </div>
 
