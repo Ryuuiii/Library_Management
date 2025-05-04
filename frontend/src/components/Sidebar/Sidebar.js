@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import './Sidebar.css'
+import Logout from '../Logout/Logout'
 
 const Sidebar = () => {
+  const [isLogout, setIsLogout] = useState(false)
+
+
   return (
     <main className='sidebar-component'>
       <aside className='sidebar-container'>
@@ -27,13 +31,15 @@ const Sidebar = () => {
               Transactions
             </NavLink>
           </li>
-          <li className='sidebar-item'>
-            <NavLink to="/login" className={({isActive}) => (isActive ? 'active' : '')}>
-              Logout
-            </NavLink>
+          <li className='sidebar-item' onClick={() => setIsLogout(true)}>
+            <a>Logout</a>
           </li>
         </ul>
       </aside>
+
+      {isLogout && (
+        <Logout onClose={() => setIsLogout(false)}/>
+      )}
     </main>
   )
 }
