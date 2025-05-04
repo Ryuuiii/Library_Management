@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import Layout from '../../components/Layout/Layout'
+import ActionButton from '../../components/ActionButtons/ActionButton'
+import BorrowerForm from '../../components/Forms/BorrowerForm';
 import BorrowerTable from '../../components/Table/BorrowerTable';
+import Pagination from '../../components/Pagination/Pagination';
 import { IoMdSearch } from "react-icons/io";
 import './Borrower.css'
-import Pagination from '../../components/Pagination/Pagination';
+
 
 
 const Borrower = () => {
   const [borrowers, setBorrowers] = useState([])
+  const [isBorrowerFormOpen, setIsBorrowerFormOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedYearLevel, setSelectedYearLevel] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
@@ -61,6 +65,7 @@ const Borrower = () => {
           </div>
 
           <div className='buttons'>
+            <ActionButton label='+ Add Borrower' onClick={()=> setIsBorrowerFormOpen(true)}/>
           </div>
         </header>
 
@@ -77,6 +82,17 @@ const Borrower = () => {
           onPageChange={(page) => setCurrentPage}
         />
       </div>
+
+      {isBorrowerFormOpen && (
+        <BorrowerForm
+          onClose={() => setIsBorrowerFormOpen(false)}
+          mode='add'
+          onSubmit={(newBorrower) => {
+            console.log('Borrower:', newBorrower)
+            setIsBorrowerFormOpen(false)
+          }}
+        />
+      )}
     </Layout>
   )
 }

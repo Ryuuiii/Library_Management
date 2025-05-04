@@ -9,10 +9,12 @@ import { FaBook, FaBookReader, FaBookmark, FaClock, FaChartArea } from 'react-ic
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css';
+import BorrowerForm from '../../components/Forms/BorrowerForm';
 
 const Dashboard = () => {
   const [isBookFormOpen, setIsBookFormOpen] = useState(false);
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
+  const [isBorrowerFormOpen, setIsBorrowerFormOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('7days'); 
   const [filteredData, setFilteredData] = useState([]); 
   const [transactions, setTransactions] = useState([]);
@@ -149,9 +151,10 @@ const Dashboard = () => {
 
           <div className="quick-actions">
             <h2>⚡Quick Actions</h2>
-            <div className="action-buttons">
-              <ActionButton label="+ Add New Book" onClick={() => setIsBookFormOpen(true)} />
-              <ActionButton label="+ Add Transaction" onClick={() => setIsTransactionFormOpen(true)} />
+            <div className='action-buttons'>
+              <ActionButton label='+ Add New Book' onClick={() => setIsBookFormOpen(true)} />
+              <ActionButton label='+ Add Transaction' onClick={() => setIsTransactionFormOpen(true)} />
+              <ActionButton label='+ Add Borrower' onClick={() => setIsBorrowerFormOpen(true)} />
             </div>
           </div>
         </section>
@@ -184,6 +187,17 @@ const Dashboard = () => {
           onSubmit={(newTransaction) => {
             console.log('Transaction: ', newTransaction);
             setIsTransactionFormOpen(false);
+          }}
+        />
+      )}
+
+      {isBorrowerFormOpen && (
+        <BorrowerForm
+          onClose={() => setIsBorrowerFormOpen(false)}
+          mode='add'
+          onSubmit={(newBorrower) => {
+            console.log('Borrower:', newBorrower)
+            setIsBorrowerFormOpen(false)
           }}
         />
       )}
