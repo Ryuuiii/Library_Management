@@ -30,8 +30,13 @@
   top: 1rem;
   right: 1rem;
   color: #800000;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  border-radius: 50%;
   cursor: pointer;
+}
+
+.close-logout:hover{
+  background: #bbbbbb;
 }
 
 .buttons button{
@@ -54,4 +59,12 @@
 .cancel:hover,
 .logout:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.logout:hover{
+  background: #800000;
+}
+
+.cancel:hover{
+  background: #231815;
 }

@@ -1,5 +1,5 @@
 .action-button{
-  background: #800000;
+  background: #a52a2a;
   color: #ffffff;
   padding: 1rem 0.8rem;
   cursor: pointer;
@@ -10,13 +10,8 @@
   transition: all 0.3s ease;
 }
 
-.action-button ,
 .action-button:hover{
-  border: 2px solid #800000;
-}
-
-.action-button:hover{
-  background: #ffffff;
   color: #800000;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  background: #ffffff;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.6);
 }
