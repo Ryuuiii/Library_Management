@@ -18,12 +18,35 @@ const Borrower = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1)
 
-  useEffect(() => {
-    // TODO: Fetch books from backend API once available
-    // 🚧 GET with support for search, filters, 
-    // and pagination (kahit 10 rows per page siguro)
-    //POTAPOTAPOTATPOAT
-  }, [searchQuery, selectedType, selectedYearLevel, currentPage])
+    useEffect(() => {
+      const fetchBorrowers = async () => {
+        try {
+          console.log('Fetching borrowers...');
+          const response = await fetch(
+            `http://localhost/api/borrowers.php?search=${searchQuery}&type=${selectedType}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+          const data = await response.json();
+          console.log('Fetched Borrowers:', data);
+    
+          if (response.ok) {
+            setBorrowers(data.borrowers || []);
+            setTotalPages(data.totalPages || 1);
+          } else {
+            console.error('Failed to fetch borrowers:', data.error);
+          }
+        } catch (error) {
+          console.error('Error fetching borrowers:', error);
+        }
+      };
+    
+      fetchBorrowers();
+    }, [searchQuery, selectedType, selectedYearLevel, currentPage]);
 
   const handleEdit = () =>{
      // TODO: Send PUT  request to backend to update Borrower by ID

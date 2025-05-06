@@ -1,77 +1,33 @@
-import React, { useState } from 'react'
-import DotMenu from '../3DotMenu/DotMenu'
-import BorrowerForm from '../Forms/BorrowerForm';
-import './Table.css'
+import React from 'react';
+import './Table.css';
 
-const BorrowerTable = ({borrowers, onDeleteBorrower, onEditBorrower}) => {
-    const [editBorrower, setEditBorrower] = useState(false);
-    const [selectedBorrower, setSelectedBorrower] = useState(null);
-
-  const handleEdit = (borrower) => {
-    setSelectedBorrower(borrower)
-    setEditBorrower(true)
-  }
-
-  const handleDelete = async (borrowerID) => {
-    if(window.confirm("Are you sure you want to delete this borrower?")) {
-      await onDeleteBorrower(borrowerID)
-    }
-  }
-
+const BorrowerTable = ({ borrowers }) => {
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Borrower ID</th>
-            <th>Email Address</th>
-            <th>Full Name</th>
-            <th>Borrower Type ID</th>
-            <th>Program Name</th>
-            <th>Year Level</th>
+    <table>
+      <thead>
+        <tr>
+          <th>Borrower ID</th>
+          <th>Name</th>
+          <th>Email Address</th>
+          <th>Year Level</th>
+          <th>Program ID</th>
+          <th>Borrower Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {borrowers.map((borrower) => (
+          <tr key={borrower.BorrowerID}> {/* Add a unique key here */}
+            <td>{borrower.BorrowerID}</td>
+            <td>{borrower.Name}</td>
+            <td>{borrower.EmailAddress}</td>
+            <td>{borrower.YearLevel}</td>
+            <td>{borrower.ProgramID}</td>
+            <td>{borrower.BorrowerTypeID}</td>
           </tr>
-        </thead>
-        <tbody>
-          {borrowers.length > 0 ? (
-            borrowers.map((borrower) => (
-              <tr key={borrower.borrowerID}>
-                <td>{borrower.borrowerID}</td>
-                <td>{borrower.emailAddress}</td>
-                <td>{borrower.fullName}</td>
-                <td>{borrower.borrowerTypeID}</td>
-                <td>{borrower.programName}</td>
-                <td className='last-cell'>
-                  <span>{borrower.yearLevel}</span>
-                  <DotMenu
-                    onEdit={() => handleEdit()}
-                    onDelete={() => handleDelete()}
-                  />
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan='8' className='no-data'>
-                No Borrower Available
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+        ))}
+      </tbody>
+    </table>
+  );
+};
 
-      {editBorrower && (
-        <BorrowerForm
-          onClose={() => setEditBorrower(false)}
-          mode='edit'
-          initialData={selectedBorrower}
-          onSubmit={(updateBorrower) => {
-            onEditBorrower(updateBorrower)
-            setEditBorrower(false)
-          }}
-        />
-      )}
-    </div>
-  )
-}
-
-export default BorrowerTable
+export default BorrowerTable;
