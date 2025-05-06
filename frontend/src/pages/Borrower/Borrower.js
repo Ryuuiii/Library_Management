@@ -80,7 +80,7 @@ const Borrower = () => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
 
