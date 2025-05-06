@@ -36,10 +36,13 @@ const Login = () => {
       if (response.ok) {
         const role = data.role?.toLowerCase();
   
-        if (role === 'admin' || role === 'borrower') {
+        if (role === 'admin') {
           localStorage.setItem('userRole', role);
           navigate('/dashboard');
-        } else {
+        } else if (role === 'borrower') {
+          localStorage.setItem('userRole', role);
+          navigate('/borrower/profile');
+          } else {
           setLoginError('Unknown role.');
         }
       } else {

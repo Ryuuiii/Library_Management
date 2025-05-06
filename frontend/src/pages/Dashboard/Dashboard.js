@@ -61,7 +61,33 @@ const Dashboard = () => {
   
 
   useEffect(() => {
-    // 🔧 TODO: Fetch book statistics (total, borrowed, available, overdue)
+    const fetchBookStats = async () => {
+      try {
+        console.log('Fetching book statistics...');
+        const response = await fetch('http://localhost/api/dashboard_stats.php', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        console.log('Fetched book statistics:', data);
+        if (response.ok) {
+          setBookStats({
+            total: data.total,
+            borrowed: data.borrowed,
+            available: data.available,
+            overdue: data.overdue,
+          });
+        } else {
+          console.error('Failed to fetch book statistics:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching book statistics:', error);
+      }
+    };
+  
+    fetchBookStats();
   }, []);
 
   useEffect(() => {

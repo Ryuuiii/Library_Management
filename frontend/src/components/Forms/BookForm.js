@@ -21,10 +21,33 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
     }
   }, [mode, initialData]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //Logic for Adding and Updating Books 
+    console.log('Form Data:', formData); // Debugging
+
+    try {
+      const response = await fetch('http://localhost/api/addBook.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      console.log('Response:', result); // Debugging
+
+      if (response.ok) {
+        alert(result.message || 'Book added successfully');
+        onClose(); // Close the form
+      } else {
+        alert(result.error || 'Failed to add book');
+      }
+    } catch (error) {
+      console.error('Error adding book:', error);
+      alert('An error occurred while adding the book');
+    }
   };
 
   const handleChange = (e) => {
