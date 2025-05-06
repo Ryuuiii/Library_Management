@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+
+.main-content1 {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: #f8f8f8;
+}
+
+.main-content1 h1 {
+  color: #b41f1f;
+  position: relative;
+  top: 20px;
+  left: -460px;
+  text-align: center;
+}
+
+.notification {
+  background-color: rgb(217, 217, 217);
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.date {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.message {
+  color: #333;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+

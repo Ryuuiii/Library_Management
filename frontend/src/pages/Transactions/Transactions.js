@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Layout from '../../components/Layout/Layout';
+import ALayout from '../../components/Layout/ALayout';
 import TransactionTable from  '../../components/Table/TransactionTable'
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import { IoMdSearch } from "react-icons/io";
@@ -36,7 +36,7 @@ const Transactions = () => {
 
 
   return (
-    <Layout title='Transactions'>
+    <ALayout title='Transactions'>
       <div className='transactions-content'>
         <header className='transaction-header'>
           <div className='transaction-filter'>
@@ -88,7 +88,7 @@ const Transactions = () => {
           }}
         />
       )}
-    </Layout>
+    </ALayout>
   );
 }
 

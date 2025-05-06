@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../components/Layout/Layout';
+import ALayout from '../../components/Layout/ALayout';
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import StatsCard from '../../components/StatsCard/StatsCard';
 import TransactionTable from '../../components/Table/TransactionTable';
 import BookForm from '../../components/Forms/BookForm';
 import TransactionForm from '../../components/Forms/TransactionForm';
+import BorrowerForm from '../../components/Forms/BorrowerForm';
 import { FaBook, FaBookReader, FaBookmark, FaClock, FaChartArea } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css';
-import BorrowerForm from '../../components/Forms/BorrowerForm';
 
 const Dashboard = () => {
   const [isBookFormOpen, setIsBookFormOpen] = useState(false);
@@ -82,7 +82,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Layout title="Dashboard">
+    <ALayout title="Dashboard">
       <div className="dashboard-content">
         <div className="opening">
         <h1>Welcome, {userRole === 'admin' ? 'Admin' : userRole === 'borrower' ? 'Borrower' : 'User'}!</h1>
@@ -201,7 +201,7 @@ const Dashboard = () => {
           }}
         />
       )}
-    </Layout>
+    </ALayout>
   );
 };
 

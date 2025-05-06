@@ -1,12 +1,12 @@
 import React from 'react'
-import Sidebar from '../Sidebar/Sidebar'
+import ASidebar from '../Sidebar/ASidebar'
 import Header from '../Header/Header'
 import './Layout.css'
 
-const Layout = ({ title, children }) => {
+const ALayout = ({ title, children }) => {
   return (
     <div className='layout-container'>
-      <Sidebar />
+      <ASidebar />
       <div className='main-content'>
       <Header title={title} />
         <div className='content'>{children}</div>
@@ -15,4 +15,4 @@ const Layout = ({ title, children }) => {
   )
 }
 
-export default Layout
+export default ALayout

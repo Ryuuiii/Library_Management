@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import './Sidebar.css'
 import Logout from '../Logout/Logout'
 
-const Sidebar = () => {
+const ASidebar = () => {
   const [isLogout, setIsLogout] = useState(false)
 
 
@@ -44,4 +44,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default ASidebar

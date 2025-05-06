@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Layout from '../../components/Layout/Layout'
+import ALayout from '../../components/Layout/ALayout'
 import ActionButton from '../../components/ActionButtons/ActionButton'
 import BorrowerForm from '../../components/Forms/BorrowerForm';
 import BorrowerTable from '../../components/Table/BorrowerTable';
@@ -36,7 +36,7 @@ const Borrower = () => {
   //MAG-ADD BA TAYO NG BORROWER O LIKE FIXED NA YUN SA DATABASE NA LANG AGAD
   //KUNG OO NEED KO NG BUTTON AT NG FORM PARA DON
   return (
-    <Layout title='Borrower Management'>
+    <ALayout title='Borrower Management'>
       <div className='borrower-content'>
       <header className='borrower-header'>
           <div className='borrower-filter'>
@@ -94,7 +94,7 @@ const Borrower = () => {
           }}
         />
       )}
-    </Layout>
+    </ALayout>
   )
 }
 

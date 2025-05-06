@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Layout from '../../components/Layout/Layout';
+import ALayout from '../../components/Layout/ALayout';
 import BookTable from '../../components/Table/BookTable';
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import BookForm from '../../components/Forms/BookForm';
@@ -37,7 +37,7 @@ const Books = () => {
 
 
   return (
-    <Layout title='Book Management'>
+    <ALayout title='Book Management'>
       <div className='books-content'>
         <header className='bookpage-header'>
           <div className='book-filter'>
@@ -97,7 +97,7 @@ const Books = () => {
           }}
         />
       )}
-    </Layout>
+    </ALayout>
   );
 }
 

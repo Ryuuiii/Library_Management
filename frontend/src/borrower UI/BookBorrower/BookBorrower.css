@@ -1,0 +1,102 @@
+.bookpage-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 3rem
+}
+
+.book-filter{
+  flex: 4;
+  display: flex;
+  gap: 0.5rem;
+  padding-right: 5rem;
+}
+
+.book-filter input {
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+.search-bar{
+  position: relative;
+  width: 100%;
+}
+
+.search-bar input[type="search"] {
+  padding-right: 3rem;
+}
+
+.button-container button,
+.book-filter input {
+  padding: 0.75rem 1rem;
+}
+
+
+.book-filter select,
+.book-filter input{
+  border-radius: 0.5rem;
+  border: 2px solid #800000;
+}
+
+.book-filter select{
+  padding: 0.75rem;
+  width: 30%;
+  cursor: pointer;
+}
+
+.search-icon {
+  position: absolute;
+  top: 22%;
+  right: 1rem;
+  font-size: 1.8rem;
+  color: #555555;
+}
+
+.year-level,
+.program {
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem; 
+  background: url('data:image/svg+xml;utf8,<svg fill="%23800000" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 1rem center;
+  background-size: 1.5rem;
+}
+
+.button-container{
+  flex: 1;
+  padding: 0;
+  display: flex;
+  justify-content: right;
+}
+
+.button-container button{
+  margin: 0;
+  width: 90%;
+}
+
+.notifi2 {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.notification-icon2 {
+  font-size: 24px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #800000;
+  position: relative;
+  position: relative;
+  top: -90px;
+  right: -33.75rem;
+}
+
+.notification-icon2:hover {
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  transform: scale(1.1);
+}
+
+
