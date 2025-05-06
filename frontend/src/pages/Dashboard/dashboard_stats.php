@@ -1,34 +1,33 @@
 <?php
-require_once 'db.php'; // Adjust this path based on your structure
+require_once 'db.php';
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: http://localhost:3000'); 
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');
 
-// Get Total Books
-$totalQuery = "SELECT COUNT(*) as total FROM books";
-$borrowedQuery = "SELECT COUNT(*) as borrowed FROM books WHERE Status = 'Borrowed'";
-$availableQuery = "SELECT COUNT(*) as available FROM books WHERE Status = 'Available'";
-$overdueQuery = "SELECT COUNT(*) as overdue FROM books WHERE Status = 'Overdue'";
-
-$result = [
-    'total' => 0,
-    'borrowed' => 0,
-    'available' => 0,
-    'overdue' => 0
-];
-
-try {
-    $total = $conn->query($totalQuery)->fetch_assoc();
-    $borrowed = $conn->query($borrowedQuery)->fetch_assoc();
-    $available = $conn->query($availableQuery)->fetch_assoc();
-    $overdue = $conn->query($overdueQuery)->fetch_assoc();
-
-    $result['total'] = $total['total'];
-    $result['borrowed'] = $borrowed['borrowed'];
-    $result['available'] = $available['available'];
-    $result['overdue'] = $overdue['overdue'];
-
-    echo json_encode($result);
-} catch (Exception $e) {
-    echo json_encode(['error' => 'Failed to fetch book statistics']);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Invalid request method']);
+    exit();
+}
+
+$totalBooksQuery = "SELECT COUNT(*) AS total FROM books";
+$totalBooksResult = $conn->query($totalBooksQuery);
+$totalBooks = $totalBooksResult->fetch_assoc()['total'] ?? 0;
+
+$availableBooksQuery = "SELECT SUM(AvailableCopies) AS available FROM books";
+$availableBooksResult = $conn->query($availableBooksQuery);
+$availableBooks = $availableBooksResult->fetch_assoc()['available'] ?? 0;
+
+echo json_encode([
+    'total' => $totalBooks,
+    'available' => $availableBooks,
+]);
 ?>

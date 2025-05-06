@@ -72,12 +72,13 @@ const Dashboard = () => {
         });
         const data = await response.json();
         console.log('Fetched book statistics:', data);
+    
         if (response.ok) {
           setBookStats({
             total: data.total,
-            borrowed: data.borrowed,
             available: data.available,
-            overdue: data.overdue,
+            borrowed: data.borrowed || 0, 
+            overdue: data.overdue || 0,
           });
         } else {
           console.error('Failed to fetch book statistics:', data.error);
