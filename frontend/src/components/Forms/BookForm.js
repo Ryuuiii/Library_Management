@@ -12,41 +12,54 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
     programID: "",
     yearLevel: "",
     availableCopies: "",
-    ...initialData
   });
 
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      setFormData(initialData);
+    if (initialData) {
+      setFormData({
+        bookID: initialData.bookID || "",
+        title: initialData.title || "",
+        author: initialData.author || "",
+        publishedYear: initialData.publishedYear || "",
+        subject: initialData.subject || "",
+        programID: initialData.programID || "",
+        yearLevel: initialData.yearLevel || "",
+        availableCopies: initialData.availableCopies || "",
+      });
     }
-  }, [mode, initialData]);
+  }, [initialData]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log('Form Data:', formData); // Debugging
-
+  
+    console.log("Form Data:", formData); // Debugging
+  
     try {
-      const response = await fetch('http://localhost/api/addBook.php', {
-        method: 'POST',
+      const endpoint = `http://localhost/api/editBook.php?id=${formData.bookID}`; // Use editBook.php for editing
+      const response = await fetch(endpoint, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-
-      const result = await response.json();
-      console.log('Response:', result); // Debugging
-
+  
+      const text = await response.text(); 
+      console.log("Raw Response:", text); // Debugging
+  
+      const result = JSON.parse(text);
+      console.log("Parsed Response:", result); // Debugging
+  
       if (response.ok) {
-        alert(result.message || 'Book added successfully');
-        onClose(); // Close the form
+        alert(result.message || "Book updated successfully");
+        onClose();
       } else {
-        alert(result.error || 'Failed to add book');
+        alert(result.error || "Failed to update book");
       }
     } catch (error) {
-      console.error('Error adding book:', error);
-      alert('An error occurred while adding the book');
+      console.error("Error updating book:", error);
+      alert("An error occurred while updating the book");
     }
   };
 
@@ -59,30 +72,29 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
       <IoMdClose className="close-icon" onClick={onClose} />
       <div className="modal-content">
         <h2>{mode === "edit" ? "Edit Book" : "Add New Book"}</h2>
-
-
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label>Book ID</label>
             <input 
-              type="text" 
-              name="bookID" 
-              value={formData.bookID}
+              type="text"
+              name="bookID"
+              value={formData.bookID || ""} 
               onChange={handleChange}
-              placeholder="Enter Book ID" 
+              placeholder="Enter Book ID"
               required
+              disabled={mode === "edit"}
             />
           </div>
 
           <div className="form-group">
             <label>Title</label>
-            <input 
-              type="text" 
-              name="title"
-              value={formData.title} 
-              onChange={handleChange}
-              placeholder="Enter Book Title" 
-              required
+            <input
+            type="text"
+            name="title"
+            value={formData.title || ""}
+            onChange={handleChange}
+            placeholder="Enter Book Title"
+            required
             />
           </div>
 
@@ -91,7 +103,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input 
               type="text" 
               name="author" 
-              value={formData.author}
+              value={formData.author || ""} 
               onChange={handleChange}
               placeholder="Enter Book Author" 
               required
@@ -103,7 +115,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input
               type="number"
               name="publishedYear"
-              value={formData.publishedYear}
+              value={formData.publishedYear || ""} 
               onChange={handleChange}
               placeholder="Enter Book Published Year"
               required
@@ -115,7 +127,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input 
               type="text" 
               name="subject" 
-              value={formData.subject}
+              value={formData.subject || ""}
               onChange={handleChange}
               placeholder="Enter Subject" 
               required
@@ -127,7 +139,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input
               type="text"
               name="programID"
-              value={formData.programID}
+              value={formData.programID || ""} 
               onChange={handleChange}
               placeholder="Enter Program ID"
               required
@@ -139,7 +151,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input
               type="number"
               name="yearLevel"
-              value={formData.yearLevel}
+              value={formData.yearLevel || ""} 
               onChange={handleChange}
               placeholder="Enter Year Level"
               required
@@ -151,7 +163,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <input
               type="number"
               name="availableCopies"
-              value={formData.availableCopies}
+              value={formData.availableCopies || ""} 
               onChange={handleChange}
               placeholder="Enter Available Copies"
               required
