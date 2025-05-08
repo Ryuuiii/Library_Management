@@ -172,3 +172,15 @@
   border-radius: 50%;
   transform: scale(1.1);
 }
+.message {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.message.error {
+  color:  #a52a2a;
+}
+
+.message.success {
+  color: green;
+}

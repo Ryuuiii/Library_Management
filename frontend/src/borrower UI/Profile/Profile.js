@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import BLayout from '../../components/Layout/BLayout'
+import BLayout from '../../components/Layout/BLayout';
 import anon from '../../assets/anon.png';
 import './Profile.css';
 
@@ -9,16 +9,46 @@ const Profile = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState('');  // State for success/error message
+  const [messageType, setMessageType] = useState('');  // To manage message color (error or success)
 
-  const handlePasswordSave = () => {
+  const handlePasswordSave = async () => {
     if (newPassword !== confirmPassword) {
-      alert('New passwords do not match.');
+      setMessage('New passwords do not match.');
+      setMessageType('error');
       return;
     }
-    console.log('Old Password:', oldPassword);
-    console.log('New Password:', newPassword);
-    // Implement password update logic here
-    setIsEditingPassword(false);
+
+    try {
+      const response = await fetch('http://localhost/Library_Management/backend/api/Profile.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setMessage('Password updated successfully.');
+        setMessageType('success');
+        setTimeout(() => {
+          setIsEditingPassword(false); // Close modal after success
+        }, 2000); // Close modal after 2 seconds
+      } else {
+        setMessage(result.error || 'Unknown error occurred.');
+        setMessageType('error');
+      }
+    } catch (error) {
+      setMessage('An error occurred while updating password.');
+      setMessageType('error');
+      console.error(error);
+    }
+
+    // Reset form
     setOldPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -67,6 +97,10 @@ const Profile = () => {
             <div className="password-modal">
               <h4 className="password-header">Do you want to change your password?</h4>
               <div className="password-body">
+                {message && (
+                  <p className={`message ${messageType}`}>{message}</p>  /* Apply class based on message type */
+                )}
+
                 <label>
                   Type Old Password:
                   <input
