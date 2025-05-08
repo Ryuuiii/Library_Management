@@ -6,7 +6,7 @@ import Borrower from './pages/Borrower/Borrower'
 import Transactions from './pages/Transactions/Transactions'
 import Profile from './borrower UI/Profile/Profile'
 import BookBorrower from './borrower UI/BookBorrower/BookBorrower'
-import Notifications from './borrower UI/Notifcation/Notifications'
+import Notifications from './borrower UI/Notification/Notifications'
 
 function App() {
   return (
