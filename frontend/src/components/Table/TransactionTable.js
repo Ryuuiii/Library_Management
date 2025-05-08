@@ -3,20 +3,22 @@ import DotMenu from '../3DotMenu/DotMenu'
 import './Table.css'
 import TransactionForm from '../Forms/TransactionForm';
 
-const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
+const Table = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
+  console.log("Transactions Prop:", transactions); // Debugging
+
   const [editTransaction, setEditTransaction] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const handleEditTransaction = (transaction) => {
-    setSelectedTransaction(transaction)
-    setEditTransaction(true)
-  }
+    setSelectedTransaction(transaction);
+    setEditTransaction(true);
+  };
 
   const handleDeleteTransaction = async (transactionID) => {
-    if(window.confirm("Are you sure you want to delete this transaction?")) {
-      await onDeleteTransaction(transactionID)
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
+      await onDeleteTransaction(transactionID);
     }
-  }
+  };
 
   return (
     <div>
@@ -36,26 +38,26 @@ const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
         <tbody>
           {transactions.length > 0 ? (
             transactions.map((transaction) => (
-              <tr key={transaction.transactionID}>
-                <td>{transaction.transactionID}</td>
-                <td>{transaction.borrowerID}</td>
-                <td>{transaction.bookID}</td>
-                <td>{transaction.transactionType}</td>
-                <td>{transaction.borrowDate}</td>
-                <td>{transaction.dueDate}</td>
-                <td>{transaction.returnDate}</td>
-                <td className='last-cell'>
-                  <span>{transaction.status}</span>
+              <tr key={transaction.TransactionID}>
+                <td>{transaction.TransactionID}</td>
+                <td>{transaction.BorrowerID}</td>
+                <td>{transaction.BookID}</td>
+                <td>{transaction.TransactionType}</td>
+                <td>{transaction.BorrowDate}</td>
+                <td>{transaction.DueDate}</td>
+                <td>{transaction.ReturnDate}</td>
+                <td className="last-cell">
+                  <span>{transaction.Status}</span>
                   <DotMenu
                     onEditTransaction={() => handleEditTransaction(transaction)}
-                    onDelete={() => handleDeleteTransaction(transaction.transactionID)}
+                    onDelete={() => handleDeleteTransaction(transaction.TransactionID)}
                   />
                 </td>
-            </tr>
+              </tr>
             ))
-          ):(
+          ) : (
             <tr>
-              <td colSpan="8" className='no-data'>
+              <td colSpan="8" className="no-data">
                 No Transaction Available
               </td>
             </tr>
@@ -64,18 +66,18 @@ const Table = ({transactions, onDeleteTransaction, onEditTransaction}) => {
       </table>
 
       {editTransaction && (
-        <TransactionForm 
+        <TransactionForm
           onClose={() => setEditTransaction(false)}
-          mode='edit'
+          mode="edit"
           initialData={selectedTransaction}
           onSubmit={(updatedTransaction) => {
-            onEditTransaction(updatedTransaction)
-            setEditTransaction(false)
+            onEditTransaction(updatedTransaction);
+            setEditTransaction(false);
           }}
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Table
+export default Table;

@@ -1,62 +1,80 @@
 import React, { useState } from 'react';
-import { FaEllipsisV } from 'react-icons/fa';
-import './Table.css'; // Add styles for the dropdown menu
+import DotMenu from '../3DotMenu/DotMenu';
+import './Table.css';
+import BookForm from '../Forms/BookForm';
 
-const BookTable = ({ books, onEditBook, onDeleteBook }) => {
-  const [activeMenu, setActiveMenu] = useState(null); // Track which menu is open
+const BookTable = ({ books, onDeleteBook, onEditBook }) => {
+  const [editBook, setEditBook] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
-  const toggleMenu = (bookId) => {
-    setActiveMenu(activeMenu === bookId ? null : bookId); // Toggle the menu for the specific book
+  const handleEditBook = (book) => {
+    setSelectedBook(book);
+    setEditBook(true);
+  };
+
+  const handleDeleteBook = async (bookID) => {
+    if (window.confirm("Are you sure you want to delete this book?")) {
+      await onDeleteBook(bookID);
+    }
   };
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Book ID</th>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Published</th>
-          <th>Subject</th>
-          <th>Program ID</th>
-          <th>Year Level</th>
-          <th>Available Copies</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {books.map((book) => (
-          <tr key={book.BookID}>
-            <td>{book.BookID}</td>
-            <td>{book.BookTitle}</td>
-            <td>{book.Author}</td>
-            <td>{book.PublishedYear}</td>
-            <td>{book.Subject}</td>
-            <td>{book.ProgramIDs}</td>
-            <td>{book.YearLevel}</td>
-            <td>{book.AvailableCopies}</td>
-            <td>
-              <div className="actions-menu">
-                <FaEllipsisV
-                  className="menu-icon"
-                  onClick={() => toggleMenu(book.BookID)}
-                />
-                {activeMenu === book.BookID && (
-                  <div className="menu-dropdown">
-                    <button onClick={() => onEditBook(book.BookID, book)}>
-                      Edit
-                    </button>
-                    <button onClick={() => onDeleteBook(book.BookID)}>
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </div>
-            </td>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Book ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Year Published</th>
+            <th>Subject</th>
+            <th>ProgramID</th>
+            <th>YearLevel</th>
+            <th>Available Copies</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {books.length > 0 ? (
+            books.map((book) => (
+              <tr key={book.BookID}>
+                <td>{book.BookID}</td>
+                <td>{book.BookTitle}</td>
+                <td>{book.Author}</td>
+                <td>{book.PublishedYear}</td>
+                <td>{book.Subject}</td>
+                <td>{book.ProgramIDs}</td>
+                <td>{book.YearLevel}</td>
+                <td className="last-cell">
+                  {book.AvailableCopies}
+                  <DotMenu
+                    onEdit={() => handleEditBook(book)}
+                    onDelete={() => handleDeleteBook(book.BookID)}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="8" className="no-data">
+                No Books Available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {editBook && (
+        <BookForm
+          onClose={() => setEditBook(false)}
+          mode="edit"
+          initialData={selectedBook}
+          onSubmit={(updatedBook) => {
+            onEditBook(updatedBook);
+            setEditBook(false);
+          }}
+        />
+      )}
+    </div>
   );
 };
 

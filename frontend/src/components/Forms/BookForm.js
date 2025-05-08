@@ -82,7 +82,6 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
               onChange={handleChange}
               placeholder="Enter Book ID"
               required
-              disabled={mode === "edit"}
             />
           </div>
 

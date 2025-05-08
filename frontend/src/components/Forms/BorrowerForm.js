@@ -20,42 +20,30 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
  const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (isSubmitting) return; // Prevent duplicate submissions
-  setIsSubmitting(true);
-
-  console.log("Form Data Sent to Backend:", formData); // Debugging
-
   try {
-    const endpoint =
-      mode === "edit"
-        ? `http://localhost/api/editBorrower.php?id=${formData.borrowerID}`
-        : "http://localhost/api/addBorrower.php";
-
-    const method = mode === "edit" ? "PUT" : "POST";
-
-    const response = await fetch(endpoint, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      `http://localhost/api/editBorrower.php?id=${formData.BorrowerID}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     const result = await response.json();
-    console.log("Response from Backend:", result);
 
     if (response.ok) {
-      alert(result.message || (mode === "edit" ? "Borrower updated successfully" : "Borrower added successfully"));
-      onSubmit(formData); // Notify parent component
+      alert(result.message || "Borrower updated successfully");
+      onSubmit(formData); // Notify the parent component with the updated data
       onClose(); // Close the form
     } else {
-      alert(result.error || (mode === "edit" ? "Failed to update borrower" : "Failed to add borrower"));
+      alert(result.error || "Failed to update borrower");
     }
   } catch (error) {
-    console.error("Error submitting borrower data:", error);
-    alert("An error occurred while submitting the borrower data");
-  } finally {
-    setIsSubmitting(false); // Reset the flag
+    console.error("Error updating borrower:", error);
+    alert("An error occurred while updating the borrower");
   }
 };
 

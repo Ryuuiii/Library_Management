@@ -1,54 +1,76 @@
 import React, { useState } from 'react';
-import { FaEllipsisV } from 'react-icons/fa';
+import DotMenu from '../3DotMenu/DotMenu';
 import './Table.css';
+import BorrowerForm from '../Forms/BorrowerForm';
 
-const BorrowerTable = ({ borrowers, onEditBorrower, onDeleteBorrower }) => {
-  const [activeMenu, setActiveMenu] = useState(null);
+const BorrowerTable = ({ borrowers, onDeleteBorrower, onEditBorrower }) => {
+  const [editBorrower, setEditBorrower] = useState(false);
+  const [selectedBorrower, setSelectedBorrower] = useState(null);
 
-  const toggleMenu = (BorrowerId) => {
-    setActiveMenu(activeMenu === BorrowerId ? null : BorrowerId);
+  const handleEditBorrower = (borrower) => {
+    setSelectedBorrower(borrower);
+    setEditBorrower(true);
+  };
+
+  const handleDeleteBorrower = async (borrowerID) => {
+    if (window.confirm("Are you sure you want to delete this borrower?")) {
+      await onDeleteBorrower(borrowerID);
+    }
   };
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Borrower ID</th>
-          <th>Email Address</th>
-          <th>Full Name</th>
-          <th>Borrower Type ID</th>
-          <th>Program ID</th>
-          <th>Year Level</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {borrowers.map((borrower) => (
-          <tr key={borrower.BorrowerID}>
-            <td>{borrower.BorrowerID}</td>
-            <td>{borrower.EmailAddress}</td>
-            <td>{borrower.Name}</td>
-            <td>{borrower.BorrowerTypeID}</td>
-            <td>{borrower.ProgramID}</td>
-            <td>{borrower.YearLevel}</td>
-            <td>
-              <div className="actions-menu">
-                <FaEllipsisV
-                  className="menu-icon"
-                  onClick={() => toggleMenu(borrower.BorrowerID)}
-                />
-                {activeMenu === borrower.BorrowerID && (
-                  <div className="menu-dropdown">
-                    <button onClick={() => onEditBorrower(borrower)}>Edit</button>
-                    <button onClick={() => onDeleteBorrower(borrower.BorrowerID)}>Delete</button>
-                  </div>
-                )}
-              </div>
-            </td>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Borrower ID</th>
+            <th>Email Address</th>
+            <th>Name</th>
+            <th>Borrower Type ID</th>
+            <th>Year Level</th>
+            <th>Program</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {borrowers.length > 0 ? (
+            borrowers.map((borrower) => (
+              <tr key={borrower.BorrowerID}>
+                <td>{borrower.BorrowerID}</td>
+                <td>{borrower.EmailAddress}</td>
+                <td>{borrower.Name}</td>
+                <td>{borrower.BorrowerTypeID}</td>
+                <td>{borrower.YearLevel}</td>
+                <td className="last-cell">
+                  {borrower.ProgramID}
+                  <DotMenu
+                    onEdit={() => handleEditBorrower(borrower)}
+                    onDelete={() => handleDeleteBorrower(borrower.BorrowerID)}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="no-data">
+                No Borrowers Available
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {editBorrower && (
+        <BorrowerForm
+          onClose={() => setEditBorrower(false)}
+          mode="edit"
+          initialData={selectedBorrower}
+          onSubmit={(updatedBorrower) => {
+            onEditBorrower(updatedBorrower);
+            setEditBorrower(false);
+          }}
+        />
+      )}
+    </div>
   );
 };
 
