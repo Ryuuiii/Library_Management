@@ -2,7 +2,7 @@
 require_once 'db.php';
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: http://localhost:3000'); 
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
@@ -24,10 +24,4 @@ $totalBooks = $totalBooksResult->fetch_assoc()['total'] ?? 0;
 
 $availableBooksQuery = "SELECT SUM(AvailableCopies) AS available FROM books";
 $availableBooksResult = $conn->query($availableBooksQuery);
-$availableBooks = $availableBooksResult->fetch_assoc()['available'] ?? 0;
-
-echo json_encode([
-    'total' => $totalBooks,
-    'available' => $availableBooks,
-]);
-?>
+$availableBooks = $availableBooksResult->fetch_assoc()['available'] ?? 0

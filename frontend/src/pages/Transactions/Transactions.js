@@ -9,31 +9,36 @@ import TransactionForm from "../../components/Forms/TransactionForm";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
-  const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null); // for editing
+  const [formMode, setFormMode] = useState("add"); // add or edit
+  const [formData, setFormData] = useState(null);
+  
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost/api/getTransaction.php?search=${searchQuery}&status=${selectedStatus}&page=${currentPage}`
+      );
+      const data = await response.json();
+      console.log("Fetched Transactions:", data);
+      setTransactions(data.transactions || []);
+      setTotalPages(data.totalPages || 1);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost/api/getTransaction.php?search=${searchQuery}&status=${selectedStatus}&page=${currentPage}`
-        );
-        const data = await response.json();
-        console.log("Fetched Transactions:", data);
-        setTransactions(data.transactions || []);
-        setTotalPages(data.totalPages || 1);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      }
-    };
-
     fetchTransactions();
   }, [searchQuery, selectedStatus, currentPage]);
 
   const handleAddTransaction = async (newTransaction) => {
+    console.log("Transaction Data Sent to Backend:", newTransaction); // Debugging
+
     try {
       const response = await fetch("http://localhost/api/addTransaction.php", {
         method: "POST",
@@ -43,17 +48,19 @@ const Transactions = () => {
         body: JSON.stringify(newTransaction),
       });
 
+      if (!response.ok) {
+        const errorData = await response.text(); // Read the raw response
+        console.error("Error Response:", errorData);
+        alert("Failed to add transaction. Check the backend for errors.");
+        return;
+      }
+
       const result = await response.json();
       console.log("Add Transaction Response:", result);
 
-      if (response.ok) {
-        alert(result.message || "Transaction added successfully");
-        setCurrentPage(1);
-        setSearchQuery("");
-        setSelectedStatus("all");
-      } else {
-        alert(result.error || "Failed to add transaction");
-      }
+      alert(result.message || "Transaction added successfully");
+      fetchTransactions(); // Refresh the transactions list
+      setIsTransactionFormOpen(false); // Close the form
     } catch (error) {
       console.error("Error adding transaction:", error);
       alert("An error occurred while adding the transaction");
@@ -61,33 +68,29 @@ const Transactions = () => {
   };
 
   const handleEditTransaction = async (transactionID, updatedTransaction) => {
+    console.log("Transaction Data Sent to Backend:", updatedTransaction); // Debugging
+
     try {
-      const response = await fetch(
-        `http://localhost/api/editTransaction.php?id=${transactionID}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedTransaction),
-        }
-      );
+      const response = await fetch(`http://localhost/api/editTransaction.php?id=${transactionID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTransaction),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text(); // Read the raw response
+        console.error("Error Response:", errorData);
+        alert("Failed to update transaction. Check the backend for errors.");
+        return;
+      }
 
       const result = await response.json();
       console.log("Edit Transaction Response:", result);
 
-      if (response.ok) {
-        alert(result.message || "Transaction updated successfully");
-        setTransactions((prevTransactions) =>
-          prevTransactions.map((transaction) =>
-            transaction.transactionID === transactionID
-              ? { ...transaction, ...updatedTransaction }
-              : transaction
-          )
-        );
-      } else {
-        alert(result.error || "Failed to update transaction");
-      }
+      alert(result.message || "Transaction updated successfully");
+      fetchTransactions(); // Refresh the transactions list
     } catch (error) {
       console.error("Error updating transaction:", error);
       alert("An error occurred while updating the transaction");
@@ -95,14 +98,15 @@ const Transactions = () => {
   };
 
   const handleDeleteTransaction = async (transactionID) => {
+    if (!window.confirm("Are you sure you want to delete this transaction?")) {
+      return;
+    }
+
     try {
       const response = await fetch(
         `http://localhost/api/deleteTransaction.php?id=${transactionID}`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
@@ -113,7 +117,7 @@ const Transactions = () => {
         alert(result.message || "Transaction deleted successfully");
         setTransactions((prevTransactions) =>
           prevTransactions.filter(
-            (transaction) => transaction.transactionID !== transactionID
+            (transaction) => transaction.TransactionID !== transactionID
           )
         );
       } else {
@@ -135,10 +139,7 @@ const Transactions = () => {
                 type="search"
                 placeholder="Search by book or borrower . . . . . . ."
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <IoMdSearch className="search-icon" />
             </div>
@@ -146,10 +147,7 @@ const Transactions = () => {
             <select
               className="filter-status"
               value={selectedStatus}
-              onChange={(e) => {
-                setSelectedStatus(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => setSelectedStatus(e.target.value)}
             >
               <option value="all">All Status</option>
               <option value="borrowed">Borrowed</option>
@@ -167,9 +165,13 @@ const Transactions = () => {
         </header>
 
         <TransactionTable
-          transactions={transactions}
-          onDeleteTransaction={handleDeleteTransaction}
-          onEditTransaction={handleEditTransaction}
+        transactions={transactions}
+        onDeleteTransaction={handleDeleteTransaction}
+        onEditClick={(transaction) => {
+          setSelectedTransaction(transaction);
+          setFormMode("edit");
+          setIsTransactionFormOpen(true);
+          }}
         />
 
         <Pagination
@@ -180,15 +182,31 @@ const Transactions = () => {
       </div>
 
       {isTransactionFormOpen && (
-        <TransactionForm
-          onClose={() => setIsTransactionFormOpen(false)}
-          mode="add"
-          onSubmit={(formData) => {
-            handleAddTransaction(formData);
-            setIsTransactionFormOpen(false);
-          }}
-        />
-      )}
+  <TransactionForm
+    onClose={() => setIsTransactionFormOpen(false)}
+    mode={formMode}
+    initialData={selectedTransaction}
+    onSubmit={(formData) => {
+      const formattedData = {
+        transactionID: formData.transactionID,
+        BorrowerID: formData.borrowerID,
+        BookID: formData.bookID,
+        TransactionType: formData.transactionType,
+        Status: formData.status,
+        BorrowDate: formData.borrowDate,
+        DueDate: formData.dueDate,
+        returnDate: formData.returnDate
+      };
+    
+      if (formMode === "edit") {
+        handleEditTransaction(selectedTransaction.TransactionID, formattedData);
+      } else {
+        handleAddTransaction(formattedData); // Make sure `addTransaction.php` accepts same keys
+      }
+      setIsTransactionFormOpen(false);
+    }}
+  />
+)}
     </ALayout>
   );
 };

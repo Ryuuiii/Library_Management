@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css';
 
@@ -12,16 +12,34 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
     dueDate: "",
     returnDate: "",
     status: "",
-    ...initialData, // prefill data for edit mode
   });
 
-  useEffect(() => {
-    setFormData({ ...initialData }); // re-sync form data when initialData changes
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData({
+        transactionID: initialData.transactionID || "",
+        borrowerID: initialData.borrowerID || "",
+        bookID: initialData.bookID || "",
+        transactionType: initialData.transactionType || "",
+        borrowDate: initialData.borrowDate || "",
+        dueDate: initialData.dueDate || "",
+        returnDate: initialData.returnDate || "",
+        status: initialData.status || "",
+      });
+    }
   }, [initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData); // Call the parent submit function
+  
+    // Ensure returnDate is null if empty
+    const sanitizedFormData = {
+      ...formData,
+      returnDate: formData.returnDate,
+    };
+  
+    console.log("Form Data Submitted:", sanitizedFormData); // Debugging
+    onSubmit(sanitizedFormData); // Pass the sanitized form data to the parent component
   };
 
   const handleChange = (e) => {
@@ -38,7 +56,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
           <div className="form-group">
             <label>Transaction ID</label>
             <input 
-              type="number" 
+              type="text" 
               name="transactionID" 
               value={formData.transactionID}
               onChange={handleChange}
@@ -50,7 +68,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
           <div className="form-group">
             <label>Borrower ID</label>
             <input 
-              type="number" 
+              type="text" 
               name="borrowerID"
               value={formData.borrowerID} 
               onChange={handleChange}
@@ -75,8 +93,8 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
             <label>Transaction Type</label>
             <select name="transactionType" value={formData.transactionType} onChange={handleChange}>
               <option value="">Select Transaction Type</option>
-              <option value="borrow">Borrow Book</option>
-              <option value="return">Return Book</option>
+              <option value="Borrow Book">Borrow Book</option>
+              <option value="Return Book">Return Book</option>
             </select>
           </div>
 
@@ -109,7 +127,6 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
               name="returnDate"
               value={formData.returnDate}
               onChange={handleChange}
-              required
             />
           </div>
 

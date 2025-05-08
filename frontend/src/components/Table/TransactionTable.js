@@ -1,19 +1,8 @@
-import React, { useState } from 'react'
-import DotMenu from '../3DotMenu/DotMenu'
-import './Table.css'
-import TransactionForm from '../Forms/TransactionForm';
+import React from 'react';
+import DotMenu from '../3DotMenu/DotMenu';
+import './Table.css';
 
-const Table = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
-  console.log("Transactions Prop:", transactions); // Debugging
-
-  const [editTransaction, setEditTransaction] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
-
-  const handleEditTransaction = (transaction) => {
-    setSelectedTransaction(transaction);
-    setEditTransaction(true);
-  };
-
+const TransactionTable = ({ transactions, onDeleteTransaction, onEditClick }) => {
   const handleDeleteTransaction = async (transactionID) => {
     if (window.confirm("Are you sure you want to delete this transaction?")) {
       await onDeleteTransaction(transactionID);
@@ -45,11 +34,11 @@ const Table = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
                 <td>{transaction.TransactionType}</td>
                 <td>{transaction.BorrowDate}</td>
                 <td>{transaction.DueDate}</td>
-                <td>{transaction.ReturnDate}</td>
+                <td>{transaction.returnDate}</td>
                 <td className="last-cell">
                   <span>{transaction.Status}</span>
                   <DotMenu
-                    onEditTransaction={() => handleEditTransaction(transaction)}
+                    onEdit={() => onEditClick(transaction)}
                     onDelete={() => handleDeleteTransaction(transaction.TransactionID)}
                   />
                 </td>
@@ -64,20 +53,8 @@ const Table = ({ transactions, onDeleteTransaction, onEditTransaction }) => {
           )}
         </tbody>
       </table>
-
-      {editTransaction && (
-        <TransactionForm
-          onClose={() => setEditTransaction(false)}
-          mode="edit"
-          initialData={selectedTransaction}
-          onSubmit={(updatedTransaction) => {
-            onEditTransaction(updatedTransaction);
-            setEditTransaction(false);
-          }}
-        />
-      )}
     </div>
   );
 };
 
-export default Table;
+export default TransactionTable;
