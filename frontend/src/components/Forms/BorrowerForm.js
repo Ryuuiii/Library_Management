@@ -1,30 +1,51 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import './FormStyles.css'
+import './FormStyles.css';
 
-const BorrowerForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
-  
+const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
   const [formData, setFormData] = useState({
-    borrowerID: "",
-    emailAddress: "",
-    fullName: "",
-    borrowerTypeID: "",
-    programName: "",
-    yearLevel: "",
-
-    ...initialData,
+    borrowerID: initialData.borrowerID || initialData.BorrowerID || "",
+    emailAddress: initialData.emailAddress || initialData.EmailAddress || "",
+    Name: initialData.Name || initialData.name || "",
+    borrowerTypeID: initialData.borrowerTypeID || initialData.BorrowerTypeID || "",
+    programID: initialData.programID || initialData.ProgramID || "",
+    yearLevel: initialData.yearLevel || initialData.YearLevel || "",
   });
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+ const [isSubmitting, setIsSubmitting] = useState(false);
+  
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  try {
+    const response = await fetch(
+      `http://localhost/api/editBorrower.php?id=${formData.BorrowerID}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
-  const handleSubmit = () => {
+    const result = await response.json();
 
+    if (response.ok) {
+      alert(result.message || "Borrower updated successfully");
+      onSubmit(formData); // Notify the parent component with the updated data
+      onClose(); // Close the form
+    } else {
+      alert(result.error || "Failed to update borrower");
+    }
+  } catch (error) {
+    console.error("Error updating borrower:", error);
+    alert("An error occurred while updating the borrower");
   }
-
+};
 
   return (
     <div className="modal-overlay">
@@ -42,6 +63,7 @@ const BorrowerForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
               onChange={handleChange}
               placeholder="Enter Borrower ID"
               required
+              disabled={mode === "edit"} // Disable Borrower ID field in edit mode
             />
           </div>
 
@@ -61,8 +83,8 @@ const BorrowerForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
             <label>Full Name</label>
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="Name"
+              value={formData.Name}
               onChange={handleChange}
               placeholder="Enter Full Name"
               required
@@ -71,24 +93,32 @@ const BorrowerForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
 
           <div className="form-group">
             <label>Borrower Type ID</label>
-            <select value={formData.borrowerTypeID} onChange={handleChange}>
+            <select
+              name="borrowerTypeID"
+              value={formData.borrowerTypeID}
+              onChange={handleChange}
+              required
+            >
               <option value="">Select Borrower Type ID</option>
               <option value="ST01">ST01</option>
-              <option value=""></option>
+              <option value="FC01">FC01</option>
             </select>
           </div>
 
-          <div className="form-group">
-            <label>Program Name</label>
-            <input
-              type="text"
-              name="programName"
-              value={formData.programName}
-              onChange={handleChange}
-              placeholder="Enter Program Name (e.g BSCS)"
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label>Program</label>
+                <select
+                  name="programID"
+                  value={formData.programID}
+                  onChange={handleChange}
+                  required
+                >
+            <option value="">Select Program</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSEMC">BSEMC</option>
+                </select>
+            </div>
 
           <div className="form-group">
             <label>Year Level</label>

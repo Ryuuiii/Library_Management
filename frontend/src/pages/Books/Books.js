@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import ALayout from '../../components/Layout/ALayout';
 import BookTable from '../../components/Table/BookTable';
 import ActionButton from '../../components/ActionButtons/ActionButton';
@@ -10,6 +10,8 @@ import './Books.css';
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [isBookOpen, setIsBookOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentBook, setCurrentBook] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedYearLevel, setSelectedYearLevel] = useState('all');
   const [selectedProgram, setSelectedProgram] = useState('all');
@@ -19,7 +21,7 @@ const Books = () => {
   const fetchBooks = async () => {
     try {
       const response = await fetch(
-        `http://localhost/api/books.php?search=${searchQuery}&program=${selectedProgram}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
+        `http://localhost/api/books.php?search=${encodeURIComponent(searchQuery)}&program=${selectedProgram}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
         {
           method: 'GET',
           headers: {
@@ -27,15 +29,18 @@ const Books = () => {
           },
         }
       );
-      const data = await response.json();
+  
+      const text = await response.text();
+      console.log('Raw response:', text); // Debugging
+  
+      const data = JSON.parse(text);
       console.log('Fetched books:', data); // Debugging
   
       if (data.books && data.books.length > 0) {
-        setBooks(data.books); // Replace the books state with the new results
+        setBooks(data.books);
         setTotalPages(data.totalPages || 1);
       } else {
-        console.warn('No books found:', data);
-        setBooks([]); // Clear the books state if no results are found
+        setBooks([]);
         setTotalPages(1);
       }
     } catch (error) {
@@ -44,11 +49,10 @@ const Books = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect triggered with dependencies:', { searchQuery, selectedProgram, selectedYearLevel, currentPage });
     fetchBooks();
   }, [searchQuery, selectedProgram, selectedYearLevel, currentPage]);
 
-    const handleAddBook = async (formData) => {
+  const handleAddBook = async (formData) => {
     try {
       const response = await fetch('http://localhost/api/addBook.php', {
         method: 'POST',
@@ -57,12 +61,12 @@ const Books = () => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
         alert(result.message || 'Book added successfully');
-        fetchBooks(); 
+        fetchBooks();
       } else {
         alert(result.error || 'Failed to add book');
       }
@@ -71,14 +75,76 @@ const Books = () => {
       alert('An error occurred while adding the book');
     }
   };
-    
 
-  const handleEditBook = () => {
-    // TODO: Send PUT request to backend to update book by ID
+  const handleEditBook = async (bookID, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost/api/editBook.php?id=${bookID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      const text = await response.text();
+      console.log("Raw response from backend:", text); // Debugging
+  
+      const result = JSON.parse(text);
+  
+      if (response.ok) {
+        alert(result.message || "Book updated successfully");
+  
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.bookID === bookID ? { ...book, ...updatedData } : book
+          )
+        );
+      } else {
+        alert(result.error || "Failed to update book");
+      }
+    } catch (error) {
+      console.error("Error updating book:", error);
+      alert("An error occurred while updating the book");
+    }
   };
 
-  const handleDeleteBook = () => {
-    // TODO: Send DELETE request to backend to remove book by ID
+
+  const handleDeleteBook = async (bookID) => {
+    try {
+      const response = await fetch(`http://localhost/api/deleteBook.php?id=${bookID}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(result.message || 'Book deleted successfully');
+        fetchBooks();
+      } else {
+        alert(result.error || 'Failed to delete book');
+      }
+    } catch (error) {
+      console.error('Error deleting book:', error);
+      alert('An error occurred while deleting the book');
+    }
+  };
+
+  const openEditForm = (book) => {
+    console.log("Editing book:", book); // Debugging
+    setCurrentBook({
+      bookID: book.bookID,
+      title: book.title,
+      author: book.author,
+      publishedYear: book.publishedYear,
+      subject: book.subject,
+      programID: book.programID,
+      yearLevel: book.yearLevel,
+      availableCopies: book.availableCopies,
+    }); 
+    setIsBookOpen(true);
   };
 
   return (
@@ -92,8 +158,8 @@ const Books = () => {
                 placeholder="Search by title, author or subject . . . . . . ."
                 value={searchQuery}
                 onChange={(e) => {
-                  setSearchQuery(e.target.value); // Update the search query
-                  setCurrentPage(1); // Reset to the first page
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
                 }}
               />
               <IoMdSearch className="search-icon" />
@@ -103,8 +169,8 @@ const Books = () => {
               className="year-level"
               value={selectedYearLevel}
               onChange={(e) => {
-                setSelectedYearLevel(e.target.value); // Update the selected year level
-                setCurrentPage(1); // Reset to the first page
+                setSelectedYearLevel(e.target.value);
+                setCurrentPage(1);
               }}
             >
               <option value="all">All Year Level</option>
@@ -118,44 +184,52 @@ const Books = () => {
               className="program"
               value={selectedProgram}
               onChange={(e) => {
-                setSelectedProgram(e.target.value); // Update the selected program
-                setCurrentPage(1); // Reset to the first page
+                setSelectedProgram(e.target.value);
+                setCurrentPage(1);
               }}
             >
               <option value="all">All Program</option>
-              <option value="CS01">CS01</option>
-              <option value="IT01">IT01</option>
-              <option value="EMC01">EMC01</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSEMC">BSEMC</option>
             </select>
           </div>
 
           <div className="button-container">
-            <ActionButton label="+ Add New Book" onClick={() => setIsBookOpen(true)} />
+            <ActionButton
+              label="+ Add New Book"
+              onClick={() => {
+                setIsEditMode(false);
+                setCurrentBook(null);
+                setIsBookOpen(true);
+              }}
+            />
           </div>
         </header>
 
-        <BookTable books={books} onDeleteBook={handleDeleteBook} onEditBook={handleEditBook} />
+        <BookTable
+  books={books}
+  onEditBook={(book) => openEditForm(book)}
+  onDeleteBook={(bookID) => handleDeleteBook(bookID)}
+/>
 
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={(page) => {
-            console.log('Page changed to:', page); // Debugging
-            setCurrentPage(page);
-          }}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
 
       {isBookOpen && (
-        <BookForm
-          onClose={() => setIsBookOpen(false)}
-          mode="add"
-          onSubmit={(formData) => {
-            handleAddBook(formData);
-            setIsBookOpen(false);
-          }}
-        />
-      )}
+  <BookForm
+    initialData={currentBook} 
+    onClose={() => setIsBookOpen(false)}
+    onSubmit={() => {
+      fetchBooks(); 
+      setIsBookOpen(false);
+    }}
+  />
+)}
     </ALayout>
   );
 };
