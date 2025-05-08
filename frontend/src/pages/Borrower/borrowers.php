@@ -3,16 +3,15 @@ require_once 'db.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true'); 
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(['error' => 'Invalid request method']);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
     exit();
 }
 
-// Get query parameters
 $searchQuery = $_GET['search'] ?? '';
 $type = $_GET['type'] ?? 'all';
 $yearLevel = $_GET['yearLevel'] ?? 'all';
@@ -20,7 +19,6 @@ $page = $_GET['page'] ?? 1;
 $rowsPerPage = 10;
 $offset = ($page - 1) * $rowsPerPage;
 
-// Base query
 $query = "
     SELECT 
         borrower.BorrowerID, 
@@ -33,38 +31,31 @@ $query = "
     WHERE 1=1
 ";
 
-// Add search filter
 if (!empty($searchQuery)) {
     $query .= " AND (borrower.Name LIKE '%$searchQuery%' OR borrower.BorrowerID LIKE '%$searchQuery%')";
 }
 
-// Add type filter
 if ($type !== 'all') {
     $query .= " AND borrower.BorrowerTypeID = '$type'";
 }
 
-// Add year level filter
 if ($yearLevel !== 'all') {
     $query .= " AND borrower.YearLevel = '$yearLevel'";
 }
 
-// Add pagination
 $query .= " LIMIT $rowsPerPage OFFSET $offset";
 
-// Execute query
 $result = $conn->query($query);
 if (!$result) {
     echo json_encode(['error' => 'Failed to fetch borrowers: ' . $conn->error]);
     exit();
 }
 
-// Fetch borrowers
 $borrowers = [];
 while ($row = $result->fetch_assoc()) {
     $borrowers[] = $row;
 }
 
-// Get total count for pagination
 $totalQuery = "
     SELECT COUNT(*) AS total
     FROM borrower
@@ -84,7 +75,6 @@ $totalResult = $conn->query($totalQuery);
 $totalCount = $totalResult->fetch_assoc()['total'] ?? 0;
 $totalPages = ceil($totalCount / $rowsPerPage);
 
-// Return response
 echo json_encode([
     'borrowers' => $borrowers,
     'totalPages' => $totalPages,

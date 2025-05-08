@@ -1,26 +1,30 @@
 <?php
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: DELETE");
+header("Access-Control-Allow-Headers: Content-Type");
+
 require_once 'db.php';
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Methods: DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(['error' => 'Invalid request method']);
+if (!isset($_GET['id'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing borrower ID']);
     exit();
 }
 
-// Get borrower ID
 $borrowerID = $_GET['id'];
 
-// Delete borrower
-$query = "DELETE FROM borrowers WHERE BorrowerID = '$borrowerID'";
+$query = "DELETE FROM borrower WHERE borrowerID = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $borrowerID);
 
-if ($conn->query($query)) {
+if ($stmt->execute()) {
     echo json_encode(['message' => 'Borrower deleted successfully']);
 } else {
-    echo json_encode(['error' => 'Failed to delete borrower: ' . $conn->error]);
+    echo json_encode(['error' => 'Failed to delete borrower: ' . $stmt->error]);
+    http_response_code(500);
 }
+
+$stmt->close();
+$conn->close();
 ?>
