@@ -222,13 +222,18 @@ const Books = () => {
 
       {isBookOpen && (
   <BookForm
-    initialData={currentBook} 
-    onClose={() => setIsBookOpen(false)}
-    onSubmit={() => {
-      fetchBooks(); 
-      setIsBookOpen(false);
-    }}
-  />
+  initialData={currentBook}
+  mode={currentBook ? 'edit' : 'add'}
+  onClose={() => setIsBookOpen(false)}
+  onSubmit={(formData) => {
+    if (currentBook) {
+      handleEditBook(currentBook.bookID, formData); // <-- important!
+    } else {
+      handleAddBook(formData); // <-- also important!
+    }
+    setIsBookOpen(false);
+  }}
+/>
 )}
     </ALayout>
   );

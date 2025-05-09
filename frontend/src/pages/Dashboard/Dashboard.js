@@ -26,6 +26,7 @@ const Dashboard = () => {
   });
   const [userRole, setUserRole] = useState(''); 
   const [loading, setLoading] = useState(true); 
+
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     if (storedRole) {
@@ -35,18 +36,14 @@ const Dashboard = () => {
       fetchUserRole();
     }
   }, []);
-  
-  
+
   const fetchUserRole = async () => {
     try {
-      console.log('Fetching user role...');
       const response = await fetch('http://localhost/api/getUserRole.php', {
         method: 'GET',
         credentials: 'include',
       });
-      console.log('Response:', response);
       const data = await response.json();
-      console.log('Fetched user role:', data);
       if (response.ok) {
         setUserRole(data.role);
       } else {
@@ -58,26 +55,17 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const fetchBookStats = async () => {
       try {
-        console.log('Fetching book statistics...');
-        const response = await fetch('http://localhost/api/dashboard_stats.php', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetch('http://localhost/api/dashboard_stats.php');
         const data = await response.json();
-        console.log('Fetched book statistics:', data);
-    
         if (response.ok) {
           setBookStats({
-            total: data.total,
-            available: data.available,
-            borrowed: data.borrowed || 0, 
+            total: data.total || 0,
+            borrowed: data.borrowed || 0,
+            available: data.available || 0,
             overdue: data.overdue || 0,
           });
         } else {
@@ -87,33 +75,70 @@ const Dashboard = () => {
         console.error('Error fetching book statistics:', error);
       }
     };
-  
+
     fetchBookStats();
   }, []);
 
+  // ✅ FETCH CHART DATA BASED ON FILTER
   useEffect(() => {
-    // 🔧 TODO: Fetch recent transactions (limit = 5)
+    const fetchChartData = async () => {
+      try {
+        const response = await fetch(`http://localhost/api/borrow_return_activity.php?filter=${activeFilter}`);
+        const data = await response.json();
+        console.log('Chart Data:', data);
+
+        if (response.ok) {
+          setFilteredData(data);
+        } else {
+          console.error('Failed to fetch chart data:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+      }
+    };
+
+    fetchChartData();
+  }, [activeFilter]);
+
+  // ✅ FETCH RECENT TRANSACTIONS
+  useEffect(() => {
+    const fetchRecentTransactions = async () => {
+      try {
+        const res = await fetch("http://localhost/api/recent_transaction.php?mode=recent");
+        const data = await res.json();
+        console.log('Recent Transactions:', data);
+
+        if (res.ok) {
+          setTransactions(data.transactions || []);
+        } else {
+          console.error('Failed to fetch transactions:', data.error);
+        }
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+      }
+    };
+
+    fetchRecentTransactions();
   }, []);
+  
 
   const handleEditTransaction = () => {
-    // Handle the edit transactions logic API
+    // Implement this logic if needed
   };
 
   const handleDeleteTransaction = () => {
-    // Handle delete transactions logic API
+    // Implement this logic if needed
   };
 
-  if (loading) {
-    console.log('Loading user role...');
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <ALayout title="Dashboard">
       <div className="dashboard-content">
         <div className="opening">
-        <h1>Welcome, {userRole === 'admin' ? 'Admin' : userRole === 'borrower' ? 'Borrower' : 'User'}!</h1>
+          <h1>Welcome, {userRole === 'admin' ? 'Admin' : userRole === 'borrower' ? 'Borrower' : 'User'}!</h1>
         </div>
+
         <section className="stats-grid">
           <StatsCard icon={<FaBook />} label="Total Books" value={bookStats.total} color="#4B0082" />
           <StatsCard icon={<FaBookReader />} label="Borrowed Books" value={bookStats.borrowed} color="#FFA500" />
@@ -135,21 +160,10 @@ const Dashboard = () => {
               <div style={{ textAlign: 'center', padding: '2rem', fontSize: '1.2rem' }}>No data available for the selected filter</div>
             ) : (
               <ResponsiveContainer width="100%" height={335}>
-                <LineChart
-                  width={500}
-                  height={300}
-                  data={filteredData}
-                  margin={{
-                    top: 10,
-                    right: 20,
-                    left: 10,
-                    bottom: 0,
-                  }}
-                  borderRadius={10}
-                >
+                <LineChart data={filteredData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
-                    dataKey="name" 
+                    dataKey="name"
                     label={{
                       value: activeFilter === '3months' ? 'Months' : activeFilter === '30days' ? 'Weeks' : 'Days',
                       position: 'outsideBottomCenter',
@@ -169,8 +183,8 @@ const Dashboard = () => {
                   />
                   <Tooltip />
                   <Legend iconType="square" iconSize={10} verticalAlign="top" wrapperStyle={{ marginBottom: '3rem' }} />
-                  <Line type="monotone" dataKey="Borrowed" stroke="#FFA500" fill="#FFA500" dot={{ r: 3 }} strokeWidth={2} />
-                  <Line type="monotone" dataKey="Returned" stroke="#800000" fill="#800000" dot={{ r: 3 }} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Borrowed" stroke="#FFA500" dot={{ r: 3 }} strokeWidth={2} />
+                  <Line type="monotone" dataKey="Returned" stroke="#800000" dot={{ r: 3 }} strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -189,7 +203,7 @@ const Dashboard = () => {
         <section className="recent-transactions">
           <h2><BsFileEarmarkBarGraphFill className="recenTrans-icon" />Recent Transactions</h2>
           <TransactionTable
-            transactions={transactions} 
+            transactions={transactions}
             onDeleteTransaction={handleDeleteTransaction}
             onEditTransaction={handleEditTransaction}
           />

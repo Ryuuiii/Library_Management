@@ -15,7 +15,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
   });
 
   React.useEffect(() => {
-    if (initialData) {
+    if (mode === 'edit' && initialData) {
       setFormData({
         transactionID: initialData.transactionID || "",
         borrowerID: initialData.borrowerID || "",
@@ -27,7 +27,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
         status: initialData.status || "",
       });
     }
-  }, [initialData]);
+  }, [initialData, mode]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
