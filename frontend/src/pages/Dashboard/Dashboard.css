@@ -96,7 +96,7 @@
   display: inline-block;
   justify-content: center;
   margin: 1.5rem auto;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
 .stats-grid,
