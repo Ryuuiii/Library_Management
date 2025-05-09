@@ -141,15 +141,18 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
           </div>
 
           <div className="form-group">
-            <label>Program ID</label>
-            <input
-              type="text"
-              name="programID"
-              value={formData.programID || ""} 
-              onChange={handleChange}
-              placeholder="Enter Program ID"
-              required
-            />
+            <label>Program</label>
+              <select
+                name="programID"
+                value={formData.programID || ""} 
+                onChange={handleChange}
+                required
+              >
+            <option value="">Select Program</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSEMC">BSEMC</option>
+              </select>
           </div>
 
           <div className="form-group">
