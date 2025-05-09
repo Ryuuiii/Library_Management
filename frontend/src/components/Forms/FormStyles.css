@@ -27,7 +27,8 @@
 }
 
 .close-icon,
-.close-btn {
+.close-btn,
+.close {
   position: absolute;
   left: 82.1%;
   font-size: 2rem;
@@ -36,6 +37,10 @@
   cursor: pointer;
   border-radius: 50%;
   background: transparent;
+}
+
+.close{
+  top: 13.5rem;
 }
 
 .close-icon {
@@ -116,4 +121,8 @@
 .cancel-btn:hover,
 .submit-btn:hover{
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.full-length{
+  grid-column: span 2 ;
 }

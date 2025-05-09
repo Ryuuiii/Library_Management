@@ -10,11 +10,13 @@ import { FaBook, FaBookReader, FaBookmark, FaClock, FaChartArea } from 'react-ic
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css';
+import AdminForm from '../../components/Forms/AdminForm';
 
 const Dashboard = () => {
   const [isBookFormOpen, setIsBookFormOpen] = useState(false);
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [isBorrowerFormOpen, setIsBorrowerFormOpen] = useState(false);
+  const [isAdminFormOpen, setIsAdminFormOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('7days'); 
   const [filteredData, setFilteredData] = useState([]); 
   const [transactions, setTransactions] = useState([]);
@@ -196,6 +198,7 @@ const Dashboard = () => {
               <ActionButton label='+ Add New Book' onClick={() => setIsBookFormOpen(true)} />
               <ActionButton label='+ Add Transaction' onClick={() => setIsTransactionFormOpen(true)} />
               <ActionButton label='+ Add Borrower' onClick={() => setIsBorrowerFormOpen(true)} />
+              <ActionButton label='+ Add Admin' onClick={() => setIsAdminFormOpen(true)}/>
             </div>
           </div>
         </section>
@@ -240,6 +243,16 @@ const Dashboard = () => {
             console.log('Borrower:', newBorrower)
             setIsBorrowerFormOpen(false)
           }}
+        />
+      )}
+
+      {isAdminFormOpen && (
+        <AdminForm 
+        onClose={() => setIsAdminFormOpen(false)} 
+        mode='add' 
+        onSubmit={(newAdmin) => {
+        console.log('Admin:', newAdmin) 
+        setIsAdminFormOpen(false)}}
         />
       )}
     </ALayout>
