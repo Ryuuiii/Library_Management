@@ -36,36 +36,35 @@ const Transactions = () => {
     fetchTransactions();
   }, [searchQuery, selectedStatus, currentPage]);
 
-  const handleAddTransaction = async (newTransaction) => {
-    console.log("Transaction Data Sent to Backend:", newTransaction); // Debugging
-
+  const handleAddTransaction = async (formData) => {
     try {
       const response = await fetch("http://localhost/api/addTransaction.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newTransaction),
+        body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        const errorData = await response.text(); // Read the raw response
-        console.error("Error Response:", errorData);
-        alert("Failed to add transaction. Check the backend for errors.");
-        return;
+  
+      const data = await response.json();
+      console.log("Response from Backend:", data);
+  
+      if (!response.ok || data.error) {
+        throw new Error(data.error || "Unknown error");
       }
-
-      const result = await response.json();
-      console.log("Add Transaction Response:", result);
-
-      alert(result.message || "Transaction added successfully");
-      fetchTransactions(); // Refresh the transactions list
-      setIsTransactionFormOpen(false); // Close the form
+  
+      // ✅ Show success alert
+      alert("Transaction applied successfully!");
+  
+      // Optionally refresh transaction list
+      fetchTransactions();
     } catch (error) {
-      console.error("Error adding transaction:", error);
-      alert("An error occurred while adding the transaction");
+      console.error("Failed to add transaction:", error.message);
+      alert("Failed to apply transaction: " + error.message);
     }
   };
+  
+  
 
   const handleEditTransaction = async (transactionID, updatedTransaction) => {
     console.log("Transaction Data Sent to Backend:", updatedTransaction); // Debugging
@@ -189,13 +188,13 @@ const Transactions = () => {
     onSubmit={(formData) => {
       const formattedData = {
         transactionID: formData.transactionID,
-        BorrowerID: formData.borrowerID,
-        BookID: formData.bookID,
-        TransactionType: formData.transactionType,
-        Status: formData.status,
-        BorrowDate: formData.borrowDate,
-        DueDate: formData.dueDate,
-        returnDate: formData.returnDate
+  bookID: formData.bookID || "",
+  borrowerID: formData.borrowerID || "",
+  transactionType: formData.transactionType || "",
+  status: formData.status || "",
+  borrowDate: formData.borrowDate || "",
+  dueDate: formData.dueDate || "",
+  returnDate: formData.returnDate || null
       };
     
       if (formMode === "edit") {

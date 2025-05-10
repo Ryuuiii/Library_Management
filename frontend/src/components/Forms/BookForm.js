@@ -36,32 +36,39 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
     console.log("Form Data:", formData); // Debugging
   
     try {
-      const endpoint = `http://localhost/api/editBook.php?id=${formData.bookID}`; // Use editBook.php for editing
+      const isEdit = mode === "edit";
+      const endpoint = isEdit
+        ? `http://localhost/api/editBook.php?id=${formData.bookID}`
+        : `http://localhost/api/addBook.php`;
+      const method = isEdit ? "PUT" : "POST";
+  
       const response = await fetch(endpoint, {
-        method: "PUT",
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
   
-      const text = await response.text(); 
+      const text = await response.text();
       console.log("Raw Response:", text); // Debugging
   
       const result = JSON.parse(text);
       console.log("Parsed Response:", result); // Debugging
   
       if (response.ok) {
-        alert(result.message || "Book updated successfully");
+        alert(result.message || (isEdit ? "Book updated successfully" : "Book added successfully"));
         onClose();
       } else {
-        alert(result.error || "Failed to update book");
+        alert(result.error || (isEdit ? "Failed to update book" : "Failed to add book"));
       }
     } catch (error) {
-      console.error("Error updating book:", error);
-      alert("An error occurred while updating the book");
+      console.error("Error submitting book form:", error);
+      alert("An error occurred while submitting the book form");
     }
   };
+  
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -134,15 +141,18 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
           </div>
 
           <div className="form-group">
-            <label>Program ID</label>
-            <input
-              type="text"
-              name="programID"
-              value={formData.programID || ""} 
-              onChange={handleChange}
-              placeholder="Enter Program ID"
-              required
-            />
+            <label>Program</label>
+              <select
+                name="programID"
+                value={formData.programID || ""} 
+                onChange={handleChange}
+                required
+              >
+            <option value="">Select Program</option>
+            <option value="BSCS">BSCS</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSEMC">BSEMC</option>
+              </select>
           </div>
 
           <div className="form-group">

@@ -17,7 +17,11 @@ const BSidebar = () => {
           </li>
           <li className='sidebar-item'>
             <NavLink to="/borrower/books" className={({isActive}) => (isActive ? 'active' : '')}>
+<<<<<<< HEAD
               Book Catalog
+=======
+              Book Catalogue
+>>>>>>> 3efe4c640a1f82a3cbe5c79bd8164a7618fd98a0
             </NavLink>
           </li>
           

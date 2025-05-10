@@ -15,7 +15,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
   });
 
   React.useEffect(() => {
-    if (initialData) {
+    if (mode === 'edit' && initialData) {
       setFormData({
         transactionID: initialData.transactionID || "",
         borrowerID: initialData.borrowerID || "",
@@ -27,7 +27,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
         status: initialData.status || "",
       });
     }
-  }, [initialData]);
+  }, [initialData, mode]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,7 +91,10 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
 
           <div className="form-group">
             <label>Transaction Type</label>
-            <select name="transactionType" value={formData.transactionType} onChange={handleChange}>
+            <select 
+              name="transactionType" 
+              value={formData.transactionType} onChange={handleChange}
+            >
               <option value="">Select Transaction Type</option>
               <option value="Borrow Book">Borrow Book</option>
               <option value="Return Book">Return Book</option>
@@ -130,16 +133,21 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
             />
           </div>
 
-          <div className="form-group">
+
+
+          <div className='form-group'>
             <label>Status</label>
-            <input
-              type="text"
+            <select 
               name="status"
               value={formData.status}
               onChange={handleChange}
-              placeholder="Enter Status"
               required
-            />
+            >
+              <option value="">Select Status</option>
+              <option value="borrowed">Borrowed</option>
+              <option value="returned">Returned</option>
+              <option value="overdue">Overdue</option>
+            </select>
           </div>
 
           <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
