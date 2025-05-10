@@ -21,10 +21,10 @@ const Books = () => {
       const data = await response.json();
 
       if (data.books) {
-        // Add random AvailableCopies value (1, 2, or 3)
+        
         const updatedBooks = data.books.map(book => ({
           ...book,
-          AvailableCopies: Math.floor(Math.random() * 3) + 1, // Random number between 1 and 3
+          AvailableCopies: Math.floor(Math.random() * 3) + 1, 
         }));
         setBooks(updatedBooks);
         setTotalPages(data.totalPages);
