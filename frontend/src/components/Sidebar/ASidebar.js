@@ -12,6 +12,11 @@ const ASidebar = () => {
       <aside className='sidebar-container'>
         <ul>
           <li className='sidebar-item'>
+            <NavLink to="/admin/profile" className={({isActive}) => (isActive ? 'active' : '')}>
+              Profile
+            </NavLink>
+          </li>
+          <li className='sidebar-item'>
             <NavLink to="/dashboard" className={({isActive}) => (isActive ? 'active' : '')}>
               Dashboard
             </NavLink>
@@ -31,6 +36,7 @@ const ASidebar = () => {
               Transactions
             </NavLink>
           </li>
+          
           <li className='sidebar-item' onClick={() => setIsLogout(true)}>
             <a>Logout</a>
           </li>

@@ -1,0 +1,110 @@
+.admin-profile{
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  width: 900px;
+  padding: 2rem 3rem;
+  border-radius: 0.5rem;
+  margin: 4rem auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.edit-button{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #a52a2a;
+  color: #FFFFFF;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.edit-button:hover{
+  background: #800000;
+}
+
+.profile-field{
+  border: 1px solid #e5e7eb;
+  border-radius: 0.6rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  background: #F4F4F4F4;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.profile-field label{
+  color: #800000;
+  font-weight: 700;
+}
+
+.profile-field input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.4rem;
+}
+
+.password-group{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-group input{
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.password-group span{
+  position: absolute;
+  right: 0.8rem;
+  top: 0.5rem;
+  cursor: pointer;
+}
+
+.action-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 0.5rem;
+}
+
+.action-buttons button{
+  padding: 0.8rem 1.5rem;
+  color: #FFFFFF;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  border: 1px solid #F4F4F4F4;
+}
+
+.cancel-button {
+  background: #333333;
+}
+
+.cancel-button:hover {
+  background: #000000;
+}
+
+.save-button {
+  background: #a52a2a;
+}
+
+.save-button:hover {
+  background: #800000;
+}
+
+.error-message{
+  color: #800000;
+  text-align: right;
+}
