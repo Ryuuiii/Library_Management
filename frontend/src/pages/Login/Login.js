@@ -27,6 +27,7 @@ const Login = () => {
       const response = await fetch('http://localhost/api/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Include credentials (cookies) in the request
         body: JSON.stringify(loginData)
       });
   
@@ -38,7 +39,7 @@ const Login = () => {
   
         if (role === 'admin') {
           localStorage.setItem('userRole', role);
-          navigate('/dashboard');
+          navigate('/admin/profile');
         } else if (role === 'borrower') {
           localStorage.setItem('userRole', role);
           navigate('/borrower/profile');

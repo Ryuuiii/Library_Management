@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-
 import ALayout from '../../components/Layout/ALayout';
 import './Profile.css';
+
+
 
 
 const Profile = () => {
@@ -46,11 +47,45 @@ const Profile = () => {
     setShowEditPass(false);
   };
 
+  const [profileData, setProfileData] = useState({
+    id: '',
+    name: '',
+    role: '',
+    password: ''
+  });
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+          const res = await fetch('http://localhost/api/admin_profile.php', {
+              method: 'GET',
+              credentials: 'include', // This ensures cookies are sent with the request
+          });
+          const data = await res.json();
+          console.log('Profile data:', data);
+  
+          if (data.error) {
+              console.error(data.error); // Log the error
+              setError(data.error); // Show error message if not authenticated
+          } else {
+              setProfileData(data); // Set profile data if successful
+          }
+      } catch (err) {
+          console.error('Fetch error:', err); // Handle fetch error
+      }
+  };
+  
+    fetchProfile();
+  }, []);
+  
+  
+  
+
   return (
     <ALayout title="Profile">
       <main className="admin-profile">
         <div className="header">
-          <h1>Welcome To Libsync, John Smith</h1>
+          <h1>Welcome To Libsync {profileData.name}</h1>
           <button className="edit-button" onClick={handleForm}>
             <CiEdit size={20} /> Edit Password
           </button>
@@ -62,17 +97,17 @@ const Profile = () => {
           <div className="profile-view">
           <div className="profile-field">
             <label>Admin ID:</label>
-            <p>A001</p>
+            <p>{profileData.id}</p>
           </div>
 
           <div className="profile-field">
             <label>Name:</label>
-            <p>John Smith</p>
+            <p>{profileData.name}</p>
           </div>
 
           <div className="profile-field">
             <label>Role:</label>
-            <p>System Administrator</p>
+            <p>{profileData.role}</p>
           </div>
 
           <div className="profile-field">
@@ -87,12 +122,12 @@ const Profile = () => {
           <form className="profile-edit" onSubmit={handleSubmit}>
             <div className="profile-field">
               <label className="label" htmlFor="name">Name:</label>
-              <input type="text" name="name" value="John Smith" disabled/>
+              <input type="text" name="name" value={profileData.name} disabled/>
             </div>
 
             <div className="profile-field">
               <label className="label" htmlFor="role">Role:</label>
-              <input type="text" name="role" value="System Administrator" disabled />
+              <input type="text" name="role" value={profileData.role} disabled />
             </div>
 
             <div className="profile-field">

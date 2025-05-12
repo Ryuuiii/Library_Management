@@ -126,3 +126,16 @@
 .full-length{
   grid-column: span 2 ;
 }
+
+
+.result-modal {
+  background-color: #fff5f5;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.result-modal h3 {
+  color: #c0392b;
+  margin-bottom: 1rem;
+}

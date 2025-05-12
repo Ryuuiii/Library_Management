@@ -63,8 +63,8 @@ if ($result->num_rows === 1) {
     }
 
     // Store the loginID in the session after successful validation
-    $_SESSION['userID'] = $user['loginID'];
-    error_log("Session userID set: " . $_SESSION['userID']);
+    $_SESSION['userID'] = $user['loginID']; // Make sure to set userID
+    error_log("Session userID set: " . $_SESSION['userID']); // Log session ID for debugging
 
     echo json_encode([
         "message" => "Login successful",
