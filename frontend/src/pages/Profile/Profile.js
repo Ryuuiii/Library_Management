@@ -145,7 +145,7 @@ const Profile = () => {
 
             {error && <p className="error-message">{error}</p>}
 
-            <div className="action-buttons">
+            <div className="password-buttons">
               <button type="button" className="cancel-button" onClick={handleForm}>Cancel</button>
               <button type="submit" className="save-button">Save Changes</button>
             </div>

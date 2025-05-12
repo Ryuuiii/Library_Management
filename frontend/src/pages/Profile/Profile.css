@@ -73,14 +73,14 @@
   cursor: pointer;
 }
 
-.action-buttons{
+.password-buttons{
   display: flex;
   align-items: center;
   justify-content: end;
   gap: 0.5rem;
 }
 
-.action-buttons button{
+.password-buttons button{
   padding: 0.8rem 1.5rem;
   color: #FFFFFF;
   border-radius: 0.4rem;
