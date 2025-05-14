@@ -13,9 +13,9 @@ if (!isset($_GET['id'])) {
 
 $transactionID = $_GET['id'];
 
-$query = "DELETE FROM transactions WHERE transactionID = ?";
+$query = "DELETE FROM transaction WHERE transactionID = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("i", $transactionID);
+$stmt->bind_param("s", $transactionID);
 
 if ($stmt->execute()) {
     echo json_encode(['message' => 'Transaction deleted successfully']);

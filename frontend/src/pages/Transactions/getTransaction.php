@@ -1,4 +1,5 @@
 <?php
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
@@ -10,20 +11,20 @@ $page = $_GET['page'] ?? 1;
 $rowsPerPage = 10;
 $offset = ($page - 1) * $rowsPerPage;
 
-// Build the query
-$query = "SELECT * FROM transactions WHERE 1=1";
+// Build the query for fetching transactions
+$query = "SELECT * FROM transaction WHERE 1=1";
 $params = [];
 $types = "";
 
 if (!empty($search)) {
-    $query .= " AND (bookTitle LIKE ? OR borrowerName LIKE ?)";
+    $query .= " AND (BorrowerID LIKE ? OR BookID LIKE ?)";
     $params[] = "%$search%";
     $params[] = "%$search%";
     $types .= "ss";
 }
 
 if ($status !== 'all') {
-    $query .= " AND status = ?";
+    $query .= " AND Status = ?";
     $params[] = $status;
     $types .= "s";
 }
@@ -43,26 +44,45 @@ while ($row = $result->fetch_assoc()) {
     $transactions[] = $row;
 }
 
-// Get total rows for pagination
-$totalQuery = "SELECT COUNT(*) as total FROM transactions WHERE 1=1";
+// Query to count total rows for pagination
+$countQuery = "SELECT COUNT(*) as total FROM transaction WHERE 1=1";
+$countParams = [];
+$countTypes = "";
+
 if (!empty($search)) {
-    $totalQuery .= " AND (bookTitle LIKE ? OR borrowerName LIKE ?)";
-}
-if ($status !== 'all') {
-    $totalQuery .= " AND status = ?";
+    $countQuery .= " AND (BorrowerID LIKE ? OR BookID LIKE ?)";
+    $countParams[] = "%$search%";
+    $countParams[] = "%$search%";
+    $countTypes .= "ss";
 }
 
-$totalStmt = $conn->prepare($totalQuery);
-$totalStmt->bind_param($types, ...$params);
-$totalStmt->execute();
-$totalResult = $totalStmt->get_result();
-$totalRows = $totalResult->fetch_assoc()['total'];
+if ($status !== 'all') {
+    $countQuery .= " AND Status = ?";
+    $countParams[] = $status;
+    $countTypes .= "s";
+}
+
+$countStmt = $conn->prepare($countQuery);
+if (!empty($countTypes)) {
+    $countStmt->bind_param($countTypes, ...$countParams);
+}
+$countStmt->execute();
+$countResult = $countStmt->get_result();
+$totalRows = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRows / $rowsPerPage);
+
+// Debugging: Log the query and result
+error_log("Query: $query");
+error_log("Transactions: " . json_encode($transactions));
+error_log("Total Rows: $totalRows");
+error_log("Total Pages: $totalPages");
 
 echo json_encode([
     'transactions' => $transactions,
-    'totalPages' => ceil($totalRows / $rowsPerPage),
+    'totalPages' => $totalPages,
 ]);
 
 $stmt->close();
+$countStmt->close();
 $conn->close();
 ?>

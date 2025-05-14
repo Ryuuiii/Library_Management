@@ -1,7 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'db.php';
 
@@ -21,15 +22,26 @@ function generateRandomPassword($length = 8) {
 $defaultPassword = generateRandomPassword();
 $hashedPassword = password_hash($defaultPassword, PASSWORD_BCRYPT);
 
-// Generate next LoginID (like L001, L002...)
-$result = $conn->query("SELECT LoginID FROM authentication ORDER BY LoginID DESC LIMIT 1");
-if ($result && $row = $result->fetch_assoc()) {
-    $lastLoginID = $row['LoginID']; // e.g., L005
-    $num = intval(substr($lastLoginID, 1)) + 1;
-    $loginID = "L" . str_pad($num, 3, "0", STR_PAD_LEFT); // e.g., L006
-} else {
-    $loginID = "L001";
-}
+// Generate unique LoginID
+$loginID = "";
+$tries = 0;
+do {
+    $tries++;
+    $result = $conn->query("SELECT LoginID FROM authentication ORDER BY LoginID DESC LIMIT 1");
+    if ($result && $row = $result->fetch_assoc()) {
+        $lastLoginID = $row['LoginID']; // e.g., L005
+        $num = intval(substr($lastLoginID, 1)) + 1;
+        $loginID = "A" . str_pad($num, 3, "0", STR_PAD_LEFT); // e.g., L006
+    } else {
+        $loginID = "S000"; // Default if no previous
+    }
+
+    // Check for existing LoginID
+    $checkStmt = $conn->prepare("SELECT LoginID FROM authentication WHERE LoginID = ?");
+    $checkStmt->bind_param("s", $loginID);
+    $checkStmt->execute();
+    $checkStmt->store_result();
+} while ($checkStmt->num_rows > 0 && $tries < 10); // Prevent infinite loop
 
 $conn->begin_transaction();
 
@@ -46,7 +58,6 @@ try {
 
     $conn->commit();
 
-    // Return LoginID and default password
     echo json_encode([
         "success" => true,
         "message" => "Admin created successfully!",

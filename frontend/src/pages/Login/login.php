@@ -8,15 +8,17 @@ error_reporting(E_ALL);
 
 // Handle preflight OPTIONS request for CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Origin: http://localhost:3000');
+    header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: Content-Type');
     header('Access-Control-Allow-Methods: POST, OPTIONS');
     exit(0);
 }
 
 // Set headers for CORS and JSON response
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Content-Type: application/json');
+header('Access-Control-Allow-Credentials: true');
 
 // Get and parse input
 $input = json_decode(file_get_contents("php://input"), true);
@@ -63,8 +65,8 @@ if ($result->num_rows === 1) {
     }
 
     // Store the loginID in the session after successful validation
-    $_SESSION['userID'] = $user['loginID']; // Make sure to set userID
-    error_log("Session userID set: " . $_SESSION['userID']); // Log session ID for debugging
+    $_SESSION['userID'] = $user['loginID'];
+    error_log("Session userID set: " . $_SESSION['userID']);
 
     echo json_encode([
         "message" => "Login successful",
