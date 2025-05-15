@@ -1,52 +1,68 @@
 <?php
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 require_once 'db.php';
 
-session_start(); // If you use sessions for authentication
+session_start();
 
-// Get JSON input
 $data = json_decode(file_get_contents("php://input"), true);
 
-$adminId = $data['id'] ?? '';
+$loginID = $data['loginID'] ?? '';
 $currentPassword = $data['currentPassword'] ?? '';
 $newPassword = $data['newPassword'] ?? '';
 
-if (!$adminId || !$currentPassword || !$newPassword) {
+if (!$loginID || !$currentPassword || !$newPassword) {
     echo json_encode(['error' => 'Missing required fields.']);
     exit;
 }
 
-// Fetch current password hash from DB
+// ...
+
 $stmt = $conn->prepare("
     SELECT a.password 
     FROM authentication a 
     INNER JOIN administrator ad ON a.LoginID = ad.LoginID 
     WHERE a.LoginID = ?
 ");
-$stmt->bind_param("s", $adminId);
+$stmt->bind_param("s", $loginID);
 $stmt->execute();
-$stmt->bind_result($hashedPassword);
+$stmt->bind_result($storedHash);
+
 if ($stmt->fetch()) {
-    if (!password_verify($currentPassword, $hashedPassword)) {
+    $stmt->close();
+
+    // Hash currentPassword with sha256 and compare with stored hash
+    $currentPasswordHash = hash('sha256', $currentPassword);
+    if ($currentPasswordHash !== $storedHash) {
         echo json_encode(['error' => 'Current password is incorrect.']);
         exit;
     }
+
+    // Hash new password with sha256 before saving
+    $newPasswordHash = hash('sha256', $newPassword);
+
+    $update = $conn->prepare("UPDATE authentication SET password = ? WHERE LoginID = ?");
+    $update->bind_param("ss", $newPasswordHash, $loginID);
+
+    if ($update->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Password updated successfully.']);
+    } else {
+        echo json_encode(['error' => 'Failed to update password.']);
+    }
+
+    $update->close();
+    $conn->close();
+
 } else {
     echo json_encode(['error' => 'Admin not found.']);
     exit;
 }
-$stmt->close();
-
-// Update to new password
-$newHashed = password_hash($newPassword, PASSWORD_DEFAULT);
-$update = $conn->prepare("UPDATE authentication SET password = ? WHERE LoginID = ?");
-$update->bind_param("ss", $newHashed, $adminId);
-if ($update->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Password updated successfully.']);
-} else {
-    echo json_encode(['error' => 'Failed to update password.']);
-}
-$update->close();
-$conn->close();
 ?>

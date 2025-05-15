@@ -26,7 +26,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($row = $result->fetch_assoc()) {
-    echo json_encode($row);
+    echo json_encode([
+        'id' => $row['id'],
+        'name' => $row['name'],
+        'role' => $row['role'],
+        'loginID' => $row['LoginID'],  // rename key here for React
+    ]);
 } else {
     echo json_encode(['error' => 'Admin not found']);
 }
