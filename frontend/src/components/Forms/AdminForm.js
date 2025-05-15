@@ -13,6 +13,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [createdLoginID, setCreatedLoginID] = useState("");
   const [generatedPassword, setGeneratedPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,6 +21,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost/api/adminreg.php", {
@@ -36,6 +38,12 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
         setCreatedLoginID(result.loginID);
         setGeneratedPassword(result.defaultPassword);
         setShowResultModal(true);
+        // Optional: reset form
+        setFormData({
+          adminID: "",
+          role: "",
+          name: "",
+        });
       } else {
         alert("Error: " + result.message);
       }
@@ -43,6 +51,8 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
       console.error(error);
       alert("An error occurred while submitting the form.");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -62,6 +72,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
                 onChange={handleChange}
                 placeholder="Enter Admin ID"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -74,6 +85,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
                 onChange={handleChange}
                 placeholder="Enter Role"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -86,14 +98,15 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
                 onChange={handleChange}
                 placeholder="Enter Name"
                 required
+                disabled={loading}
               />
             </div>
 
-            <button type="button" className="cancel-btn" onClick={onClose}>
+            <button type="button" className="cancel-btn" onClick={onClose} disabled={loading}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn">
-              {mode === "edit" ? "Update Admin" : "Add New Admin"}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Submitting..." : (mode === "edit" ? "Update Admin" : "Add New Admin")}
             </button>
           </form>
         </div>
@@ -105,10 +118,13 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
             <h3>✅ Admin Created Successfully</h3>
             <p><strong>Login ID:</strong> {createdLoginID}</p>
             <p><strong>Temporary Password:</strong> {generatedPassword}</p>
-            <button className="submit-btn" onClick={() => {
-              setShowResultModal(false);
-              onClose(); // close main form too
-            }}>
+            <button
+              className="submit-btn"
+              onClick={() => {
+                setShowResultModal(false);
+                onClose(); // close main form too
+              }}
+            >
               Close
             </button>
           </div>

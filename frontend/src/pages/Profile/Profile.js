@@ -27,27 +27,50 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log('Current profileData:', profileData);
+console.log('Submitting change for id:', profileData.loginID);
+console.log('Sending password change for loginID:', profileData.loginID);
 
-    const { newPassword, confirmPassword } = formData;
 
 
-    if (newPassword !== confirmPassword) {
-      setError('New password and confirm password do not match.');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
+  const { currentPassword, newPassword, confirmPassword } = formData;
 
-    // Access form values (you should store them in state with useState)
-    setError('');
-    console.log("Submitting password change");
-
+  if (newPassword !== confirmPassword) {
+    setError('New password and confirm password do not match.');
+    setTimeout(() => setError(''), 3000);
+    return;
+  }
   
-    setShowEditPass(false);
-  };
+  setError('');
+  try {
+    const res = await fetch('http://localhost/api/change_password.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        loginID: profileData.loginID,
+        currentPassword,
+        newPassword
+      })
+    });
+    const data = await res.json();
+    if (data.error) {
+      setError(data.error);
+      setTimeout(() => setError(''), 3000);
+    } else {
+      alert('Password changed successfully!');
+      setShowEditPass(false);
+      setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    }
+  } catch (err) {
+    setError('Failed to change password.');
+    setTimeout(() => setError(''), 3000);
+  }
+};
 
   const [profileData, setProfileData] = useState({
+    loginID: '',
     id: '',
     name: '',
     role: '',
@@ -55,31 +78,32 @@ const Profile = () => {
   });
   
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-          const res = await fetch('http://localhost/api/admin_profile.php', {
-              method: 'GET',
-              credentials: 'include', // This ensures cookies are sent with the request
-          });
-          const data = await res.json();
-          console.log('Profile data:', data);
-  
-          if (data.error) {
-              console.error(data.error); // Log the error
-              setError(data.error); // Show error message if not authenticated
-          } else {
-              setProfileData(data); // Set profile data if successful
-          }
-      } catch (err) {
-          console.error('Fetch error:', err); // Handle fetch error
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch('http://localhost/api/admin_profile.php', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!data.error) {
+        setProfileData({
+          loginID: data.loginID,  // make sure this is here
+          id: data.id,
+          name: data.name,
+          role: data.role,
+          password: ''
+        });
+      } else {
+        setError(data.error);
       }
+    } catch (err) {
+      console.error(err);
+    }
   };
-  
-    fetchProfile();
-  }, []);
-  
-  
-  
+
+  fetchProfile();
+}, []);
+
 
   return (
     <ALayout title="Profile">
