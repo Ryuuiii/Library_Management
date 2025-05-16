@@ -34,8 +34,6 @@ if ($conn->connect_error) {
     exit();
 }
 
-$currentDate = '2025-05-20';
-
 $stmt = $conn->prepare("SELECT BorrowerID FROM borrower WHERE LoginID = ?");
 $stmt->bind_param("s", $loginID);
 $stmt->execute();
@@ -55,18 +53,18 @@ $query = "
     SELECT 
         t.BookID,
         t.DueDate,
-        DATEDIFF(?, t.DueDate) AS daysOverdue
+        DATEDIFF(CURDATE(), t.DueDate) AS daysOverdue
     FROM transaction t
     WHERE 
         t.BorrowerID = ? AND
         t.TransactionType = 'Borrow Book' AND
         t.Status = 'Borrowed' AND
         t.returnDate IS NULL AND
-        t.DueDate < ?
+        t.DueDate <= CURDATE()
 ";
 
 $stmt2 = $conn->prepare($query);
-$stmt2->bind_param('sss', $currentDate, $borrowerID, $currentDate);
+$stmt2->bind_param('s', $borrowerID);
 $stmt2->execute();
 $result2 = $stmt2->get_result();
 
@@ -75,17 +73,17 @@ $notifications = [];
 while ($row = $result2->fetch_assoc()) {
     $bookID = $row['BookID'];
     $dueDate = $row['DueDate'];
-    $daysOverdue = $row['daysOverdue'];
+    $daysOverdue = (int)$row['daysOverdue'];
 
-    if ($daysOverdue == 0) {
+    if ($daysOverdue === 0) {
         $dateLabel = "Today";
-        $message = "Your borrowed book [$bookID] is overdue. Please return it as soon as possible.";
-    } elseif ($daysOverdue == 1) {
-        $dateLabel = "Yesterday";
         $message = "Please return your borrowed book [$bookID] today.";
+    } elseif ($daysOverdue === 1) {
+        $dateLabel = "Yesterday";
+        $message = "Your borrowed book [$bookID] was due yesterday. Please return it as soon as possible.";
     } else {
-        $dateLabel = date('F j, Y', strtotime($dueDate));
-        $message = "Your borrowed book [$bookID] was due on $dueDate. Please return it as soon as possible.";
+        $dateLabel = date('Y-m-d', strtotime($dueDate));
+        $message = "Your borrowed book [$bookID] was due on $dateLabel. Please return it as soon as possible.";
     }
 
     $notifications[] = [
@@ -95,6 +93,5 @@ while ($row = $result2->fetch_assoc()) {
 }
 
 echo json_encode($notifications);
-
 $conn->close();
 ?>
