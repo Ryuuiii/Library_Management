@@ -6,14 +6,12 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'db.php';
 
-// Get data from JSON request
 $data = json_decode(file_get_contents("php://input"), true);
 $adminID = $data['adminID'];
 $adminName = $data['name'];
 $adminRole = $data['role'];
 $loginRole = "admin";
 
-// Generate random password
 function generateRandomPassword($length = 8) {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     return substr(str_shuffle($chars), 0, $length);
@@ -22,7 +20,6 @@ function generateRandomPassword($length = 8) {
 $defaultPassword = generateRandomPassword();
 $hashedPassword = password_hash($defaultPassword, PASSWORD_BCRYPT);
 
-// Generate unique LoginID
 $loginID = "";
 $tries = 0;
 do {
@@ -33,25 +30,22 @@ do {
         $num = intval(substr($lastLoginID, 1)) + 1;
         $loginID = "A" . str_pad($num, 3, "0", STR_PAD_LEFT); // e.g., L006
     } else {
-        $loginID = "S000"; // Default if no previous
+        $loginID = "A000";
     }
 
-    // Check for existing LoginID
     $checkStmt = $conn->prepare("SELECT LoginID FROM authentication WHERE LoginID = ?");
     $checkStmt->bind_param("s", $loginID);
     $checkStmt->execute();
     $checkStmt->store_result();
-} while ($checkStmt->num_rows > 0 && $tries < 10); // Prevent infinite loop
+} while ($checkStmt->num_rows > 0 && $tries < 10);
 
 $conn->begin_transaction();
 
 try {
-    // Insert into login table
     $stmt1 = $conn->prepare("INSERT INTO authentication (LoginID, Password, role) VALUES (?, ?, ?)");
     $stmt1->bind_param("sss", $loginID, $hashedPassword, $loginRole);
     $stmt1->execute();
 
-    // Insert into admin table
     $stmt2 = $conn->prepare("INSERT INTO administrator (AdminID, LoginID, Name, Role) VALUES (?, ?, ?, ?)");
     $stmt2->bind_param("ssss", $adminID, $loginID, $adminName, $adminRole);
     $stmt2->execute();

@@ -1,12 +1,10 @@
 <?php
 session_start();
 
-// Show errors (for dev)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Handle CORS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: http://localhost:3000');
     header('Access-Control-Allow-Credentials: true');
@@ -15,12 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Set headers
 header('Access-Control-Allow-Origin: http://localhost:3000');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Credentials: true');
 
-// Get JSON input
 $input = json_decode(file_get_contents("php://input"), true);
 
 if (!isset($input['loginID']) || !isset($input['password'])) {
@@ -32,10 +28,8 @@ if (!isset($input['loginID']) || !isset($input['password'])) {
 $loginID = $input['loginID'];
 $password = $input['password'];
 
-// Hash password with sha256
 $passwordHash = hash('sha256', $password);
 
-// Connect to DB
 $conn = new mysqli("localhost", "root", "", "library");
 if ($conn->connect_error) {
     http_response_code(500);
@@ -43,7 +37,6 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Prepare and execute SQL with SHA256 hash check
 $sql = "SELECT loginID, role FROM authentication WHERE loginID = ? AND password = ?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {

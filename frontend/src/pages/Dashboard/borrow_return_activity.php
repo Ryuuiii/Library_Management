@@ -10,7 +10,6 @@ require_once 'db.php';
 $filter = $_GET['filter'] ?? '7days';
 error_log("Filter: " . $filter);
 
-// Handle 7days separately with zero-padded dates
 if ($filter === '7days') {
     $activity_query = "
         SELECT 
@@ -53,7 +52,6 @@ if ($filter === '7days') {
     exit;
 }
 
-// Handle 30days and 3months using $query
 if ($filter === '30days') {
     $query = "
         SELECT 
@@ -84,7 +82,6 @@ if ($filter === '30days') {
     exit;
 }
 
-// Safe to use $query now
 $result = $conn->query($query);
 if (!$result) {
     http_response_code(500);

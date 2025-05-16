@@ -11,7 +11,6 @@ $page = $_GET['page'] ?? 1;
 $rowsPerPage = 10;
 $offset = ($page - 1) * $rowsPerPage;
 
-// Build the query for fetching transactions
 $query = "SELECT * FROM transaction WHERE 1=1";
 $params = [];
 $types = "";
@@ -44,7 +43,6 @@ while ($row = $result->fetch_assoc()) {
     $transactions[] = $row;
 }
 
-// Query to count total rows for pagination
 $countQuery = "SELECT COUNT(*) as total FROM transaction WHERE 1=1";
 $countParams = [];
 $countTypes = "";
@@ -71,7 +69,6 @@ $countResult = $countStmt->get_result();
 $totalRows = $countResult->fetch_assoc()['total'];
 $totalPages = ceil($totalRows / $rowsPerPage);
 
-// Debugging: Log the query and result
 error_log("Query: $query");
 error_log("Transactions: " . json_encode($transactions));
 error_log("Total Rows: $totalRows");

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import BLayout from '../../components/Layout/BLayout';
 import anon from '../../assets/anon.png';
@@ -12,47 +12,88 @@ const Profile = () => {
   const [message, setMessage] = useState('');  // State for success/error message
   const [messageType, setMessageType] = useState('');  // To manage message color (error or success)
 
-  const handlePasswordSave = async () => {
-    if (newPassword !== confirmPassword) {
-      setMessage('New passwords do not match.');
-      setMessageType('error');
-      return;
-    }
 
-    try {
-      const response = await fetch('http://localhost/Library_Management/backend/api/Profile.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-          confirmPassword,
-        }),
-      });
 
-      const result = await response.json();
+ const [profileData, setProfileData] = useState({
+  name: '',
+  BorrowerID: '',
+  Emailaddress: '',
+  YearLevel: '',
+  ProgramID: '',
+  BorrowerTypeID: ''
+});
 
-      if (result.success) {
-        setMessage('Password updated successfully.');
-        setMessageType('success');
-        setTimeout(() => {
-          setIsEditingPassword(false); // Close modal after success
-        }, 2000); // Close modal after 2 seconds
-      } else {
-        setMessage(result.error || 'Unknown error occurred.');
-        setMessageType('error');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('http://localhost/Library_Management/backend/api/Profile.php', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!data.error) {
+  setProfileData({
+    BorrowerID: data.BorrowerID,
+    name: data.name,
+    Emailaddress: data.email,
+    YearLevel: data.yearLevel,
+    ProgramID: data.programID,
+    BorrowerTypeID: data.borrowerTypeID
+  });
+} else {
+  setMessage(data.error);
+  setMessageType('error');
+}
+      } catch (err) {
+        console.error(err);
       }
-    } catch (error) {
-      setMessage('An error occurred while updating password.');
-      setMessageType('error');
-      console.error(error);
+    };
+  
+    fetchProfile();
+  }, []);
+
+  const handlePasswordSave = async () => {
+  if (newPassword !== confirmPassword) {
+    setMessage('New passwords do not match.');
+    setMessageType('error');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost/Library_Management/backend/api/b_change_password.php', {
+  method: 'POST',
+  credentials: 'include',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ currentPassword: oldPassword, newPassword }),
+});
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
     }
 
-    // Reset form
-    setOldPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-  };
+    const result = await response.json();
+
+    if (result.success) {
+      setMessage('Password updated successfully.');
+      setMessageType('success');
+      setTimeout(() => setIsEditingPassword(false), 2000);
+    } else {
+      setMessage(result.error || 'Unknown error occurred.');
+      setMessageType('error');
+    }
+  } catch (error) {
+    setMessage('An error occurred while updating password.');
+    setMessageType('error');
+    console.error(error);
+  }
+
+  setOldPassword('');
+  setNewPassword('');
+  setConfirmPassword('');
+};
+
 
   return (
     <BLayout title="Profile">
@@ -66,7 +107,7 @@ const Profile = () => {
           </div>
 
           <div className="profile-card">
-            <h3 className="welcome-msg">WELCOME TO LIBSYNC, JOHN!</h3>
+            <h3 className="welcome-msg">WELCOME TO LIBSYNC, {profileData.name}</h3>
 
             <div className="profile-info">
               <div className="profile-image">
@@ -79,9 +120,9 @@ const Profile = () => {
                 <div><strong>Email address</strong></div>
 
                 <div className="info-fields2">
-                  <div><br />John Dejesus</div>
-                  <div><br />01230004545</div>
-                  <div><br />jd4545val@student.fatima.edu.ph</div>
+                <div><br />{profileData.name}</div>
+                <div><br />{profileData.BorrowerID}</div>
+                <div><br />{profileData.Emailaddress}</div>
                 </div>
               </div>
             </div>
@@ -98,7 +139,7 @@ const Profile = () => {
               <h4 className="password-header">Do you want to change your password?</h4>
               <div className="password-body">
                 {message && (
-                  <p className={`message ${messageType}`}>{message}</p>  /* Apply class based on message type */
+                  <p className={`message ${messageType}`}>{message}</p>
                 )}
 
                 <label>

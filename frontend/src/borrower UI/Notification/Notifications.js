@@ -8,36 +8,36 @@ const Notifications = () => {
   const [error, setError] = useState(null);
 
   const fetchNotifications = async () => {
-    try {
-      const response = await fetch('http://localhost/Library_Management/backend/api/Notifications.php');
+  try {
+    const response = await fetch('http://localhost/Library_Management/backend/api/Notifications.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ loginID: 'S001' })
+    });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (Array.isArray(data) && data.length > 0) {
-        setNotificationsData(data);  // Set real notifications if available
-      } else {
-        // Mock data when no real notifications
-        setNotificationsData([
-          {
-            message: "Mock Notification: 'The Great Gatsby' is overdue. Borrower: John Doe. Due Date: 2025-05-10."
-          },
-          {
-            message: "Mock Notification: '1984' is overdue. Borrower: Jane Smith. Due Date: 2025-04-30."
-          }
-        ]);
-      }
-
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching notifications:', err);
-      setError(`Failed to load notifications: ${err.message}`);
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+
+    const data = await response.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      setNotificationsData(data);
+    } else {
+      setNotificationsData([
+        { message: "No notifications found." }
+      ]);
+    }
+
+    setLoading(false);
+  } catch (err) {
+    console.error('Error fetching notifications:', err);
+    setError(`Failed to load notifications: ${err.message}`);
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchNotifications();

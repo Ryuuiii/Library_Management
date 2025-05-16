@@ -16,9 +16,8 @@ if ($conn->connect_error) {
     exit();
 }
 
-$userID = $_SESSION['userID'];  // Should be 'A001' based on login
+$userID = $_SESSION['userID'];
 
-// Adjust the query to match LoginID instead of AdminID
 $sql = "SELECT AdminID AS id, Name AS name, Role AS role, LoginID FROM administrator WHERE LoginID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $userID);
@@ -30,7 +29,7 @@ if ($row = $result->fetch_assoc()) {
         'id' => $row['id'],
         'name' => $row['name'],
         'role' => $row['role'],
-        'loginID' => $row['LoginID'],  // rename key here for React
+        'loginID' => $row['LoginID'],
     ]);
 } else {
     echo json_encode(['error' => 'Admin not found']);

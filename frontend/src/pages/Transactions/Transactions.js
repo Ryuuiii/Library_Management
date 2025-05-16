@@ -188,19 +188,19 @@ const Transactions = () => {
     onSubmit={(formData) => {
       const formattedData = {
         transactionID: formData.transactionID,
-  bookID: formData.bookID || "",
-  borrowerID: formData.borrowerID || "",
-  transactionType: formData.transactionType || "",
-  status: formData.status || "",
-  borrowDate: formData.borrowDate || "",
-  dueDate: formData.dueDate || "",
-  returnDate: formData.returnDate || null
+        bookID: formData.bookID || "",
+        borrowerID: formData.borrowerID || "",
+        transactionType: formData.transactionType || "",
+        status: formData.status || "",
+        borrowDate: formData.borrowDate || "",
+        dueDate: formData.dueDate || "",
+        returnDate: formData.returnDate || null
       };
     
       if (formMode === "edit") {
         handleEditTransaction(selectedTransaction.TransactionID, formattedData);
       } else {
-        handleAddTransaction(formattedData); // Make sure `addTransaction.php` accepts same keys
+        handleAddTransaction(formattedData);
       }
       setIsTransactionFormOpen(false);
     }}

@@ -44,7 +44,7 @@ $stmtCheck->execute();
 $resultCheck = $stmtCheck->get_result();
 
 if ($resultCheck->num_rows > 0) {
-    http_response_code(409); // 👈 Set this first!
+    http_response_code(409);
     echo json_encode(['error' => 'Borrower ID already exists']);
     $stmtCheck->close();
     $conn->close();
