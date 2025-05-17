@@ -51,7 +51,7 @@ const BorrowerTable = ({ borrowers, onDeleteBorrower, onEditBorrower }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="no-data">
+              <td colSpan="6" className="no-data">
                 No Borrowers Available
               </td>
             </tr>

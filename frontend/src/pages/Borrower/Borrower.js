@@ -175,7 +175,7 @@ const Borrower = () => {
     onClose={() => setIsBorrowerFormOpen(false)}
     mode={formMode}
     initialData={formInitialData}
-    onSubmit={async (formData) => {        // 👈 This is `onSubmit`
+    onSubmit={async (formData) => {        
       if (formMode === 'edit') {
         handleEdit(formData.borrowerID, formData);
       } else {
