@@ -27,7 +27,7 @@ const Login = () => {
       const response = await fetch('http://localhost/api/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Include credentials (cookies) in the request
+        credentials: 'include',
         body: JSON.stringify(loginData)
       });
   

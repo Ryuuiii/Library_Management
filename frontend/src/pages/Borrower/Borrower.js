@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useState, useEffect, useCallback } from 'react';
 import ALayout from '../../components/Layout/ALayout';
 import ActionButton from '../../components/ActionButtons/ActionButton';
 import BorrowerForm from '../../components/Forms/BorrowerForm';
@@ -19,32 +19,31 @@ const Borrower = () => {
   const [formMode, setFormMode] = useState('add');
 
   
-    const fetchBorrowers = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost/api/borrowers.php?search=${searchQuery}&type=${selectedType}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        const data = await response.json();
-    
-        if (response.ok) {
-          setBorrowers(data.borrowers || []);
-          setTotalPages(data.totalPages || 1);
-        } else {
-          console.error('Failed to fetch borrowers:', data.error);
-        }
-      } catch (error) {
-        console.error('Error fetching borrowers:', error);
+    const fetchBorrowers = useCallback(async () => {
+  try {
+    const response = await fetch(
+      `http://localhost/api/borrowers.php?search=${searchQuery}&type=${selectedType}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
       }
-    };
-    useEffect(() => {
-    fetchBorrowers();
-  }, [searchQuery, selectedType, selectedYearLevel, currentPage]);
+    );
+    const data = await response.json();
+
+    if (response.ok) {
+      setBorrowers(data.borrowers || []);
+      setTotalPages(data.totalPages || 1);
+    } else {
+      console.error('Failed to fetch borrowers:', data.error);
+    }
+  } catch (error) {
+    console.error('Error fetching borrowers:', error);
+  }
+}, [searchQuery, selectedType, selectedYearLevel, currentPage]);
+
+useEffect(() => {
+  fetchBorrowers();
+}, [fetchBorrowers]);
 
   const handleEdit = async (borrowerID, updatedData) => {
     try {
@@ -100,17 +99,17 @@ const Borrower = () => {
   };
 
   const handleAdd = (newBorrower) => {
-    const normalizedBorrower = {
-      BorrowerID: newBorrower.borrowerID,
-      EmailAddress: newBorrower.emailAddress,
-      Name: newBorrower.Name,
-      BorrowerTypeID: newBorrower.borrowerTypeID,
-      ProgramID: newBorrower.programID,
-      YearLevel: newBorrower.yearLevel,
-    };
-  
-    setBorrowers(prev => [...prev, normalizedBorrower]);    setBorrowers(prev => [...prev, newBorrower]);
+  const normalizedBorrower = {
+    BorrowerID: newBorrower.borrowerID,
+    EmailAddress: newBorrower.emailAddress,
+    Name: newBorrower.Name,
+    BorrowerTypeID: newBorrower.borrowerTypeID,
+    ProgramID: newBorrower.programID,
+    YearLevel: newBorrower.yearLevel,
   };
+
+  setBorrowers(prev => [...prev, normalizedBorrower]);
+};
 
   const handleAddClick = () => {
     setFormInitialData({});

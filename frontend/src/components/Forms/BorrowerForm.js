@@ -11,6 +11,9 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
     programID: initialData.programID || initialData.ProgramID || "",
     yearLevel: initialData.yearLevel || initialData.YearLevel || "",
   });
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [createdLoginID, setCreatedLoginID] = useState("");
+  const [generatedPassword, setGeneratedPassword] = useState(""); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,15 +43,22 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
     const result = JSON.parse(text);
 
     if (response.ok) {
-      alert(result.message || (isEdit ? "Borrower updated successfully" : "Borrower added successfully"));
-      onSubmit(formData); // Notify parent
-      onClose(); // Close modal
+        if (!isEdit) {
+    setCreatedLoginID(result.loginID);
+    setGeneratedPassword(result.defaultPassword);
+    setShowResultModal(true);
+  } else {
+    alert(result.message || "Borrower updated successfully");
+    onSubmit(formData);
+    onClose();
+  }
+
     } else {
       alert(result.error || (isEdit ? "Failed to update borrower" : "Failed to add borrower"));
     }
   } catch (error) {
-    console.error("Error submitting borrower form:", error);
-    alert("An error occurred while submitting the borrower form");
+    console.error("Error:", error);
+    alert("An error occurred while submitting the form.");
   }
 };
 
@@ -127,14 +137,18 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
 
           <div className="form-group">
             <label>Year Level</label>
-            <input
-              type="number"
+            <select
               name="yearLevel"
               value={formData.yearLevel}
               onChange={handleChange}
-              placeholder="Enter Year Level"
-              required
-            />
+              required              
+            >
+              <option value="">Select Year Level</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+              </select>
           </div>
 
           <button type="button" className="cancel-btn" onClick={onClose}>
@@ -145,7 +159,29 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
           </button>
         </form>
       </div>
+
+      {showResultModal && (
+  <div className="modal-overlay">
+    <div className="modal-content result-modal">
+      <h3>✅ Borrower Added Successfully</h3>
+      <p><strong>Login ID:</strong> {createdLoginID}</p>
+      <p><strong>Temporary Password:</strong> {generatedPassword}</p>
+      <button
+        className="submit-btn"
+        onClick={() => {
+          setShowResultModal(false);
+          onSubmit(formData);
+          onClose();
+        }}
+      >
+        Close
+      </button>
     </div>
+  </div>
+)}
+    </div>
+
+    
   );
 };
 

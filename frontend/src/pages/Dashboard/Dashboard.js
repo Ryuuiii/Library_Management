@@ -21,8 +21,8 @@ const Dashboard = () => {
   const [filteredData, setFilteredData] = useState([]); 
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [formMode, setFormMode] = useState("add"); // add or edit
-    const [formData, setFormData] = useState(null);
+  const [formMode, setFormMode] = useState("add"); 
+  const [formData, setFormData] = useState(null);
   const [bookStats, setBookStats] = useState({
     total: 0,
     borrowed: 0,
@@ -84,7 +84,6 @@ const Dashboard = () => {
     fetchBookStats();
   }, []);
 
-  // ✅ FETCH CHART DATA BASED ON FILTER
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -105,7 +104,6 @@ const Dashboard = () => {
     fetchChartData();
   }, [activeFilter]);
 
-  // ✅ FETCH RECENT TRANSACTIONS
   const fetchRecentTransactions = async () => {
     try {
       const res = await fetch("http://localhost/api/recent_transaction.php?mode=recent");
@@ -122,12 +120,10 @@ const Dashboard = () => {
     }
   };
   
-  // ✅ Call it in useEffect
   useEffect(() => {
     fetchRecentTransactions();
   }, []);
   
-  // ✅ Now you can safely call it in handleEditTransaction
   const handleEditTransaction = async (transactionID, updatedTransaction) => {
     console.log("Transaction Data Sent to Backend:", updatedTransaction);
   
@@ -157,7 +153,6 @@ const Dashboard = () => {
   
       alert(result.message || "Transaction updated successfully");
   
-      // ✅ This works now
       fetchRecentTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);

@@ -111,7 +111,6 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
           </form>
         </div>
       </div>
-
       {showResultModal && (
         <div className="modal-overlay">
           <div className="modal-content result-modal">
@@ -122,7 +121,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
               className="submit-btn"
               onClick={() => {
                 setShowResultModal(false);
-                onClose(); // close main form too
+                onClose();
               }}
             >
               Close

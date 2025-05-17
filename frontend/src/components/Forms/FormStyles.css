@@ -128,14 +128,20 @@
 }
 
 
-.result-modal {
-  background-color: #fff5f5;
-  border: 2px solid #c0392b;
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
-}
 .result-modal h3 {
-  color: #c0392b;
   margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.result-modal {
+  text-align: center;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+.result-modal .submit-btn {
+  margin-top: 1rem;
 }
