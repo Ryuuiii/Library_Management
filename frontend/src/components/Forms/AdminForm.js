@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import './FormStyles.css';
 import { toast } from 'react-toastify';
 
@@ -47,12 +46,14 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
           role: "",
           name: "",
         });
+        onSubmit(formData); 
+        toast.success(result.message || "Admin added successfully");
       } else {
-        alert("Error: " + result.message);
+        toast.error("Error: " + result.message);
       }
     } catch (error) {
       console.error(error);
-      alert("An error occurred while submitting the form.");
+      toast.error("An error occurred while submitting the form.");
     }
 
     setLoading(false);
@@ -114,7 +115,7 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
           </form>
         </div>
       </div>
-      
+
       {showResultModal && (
         <AdminModal
           onClose={() => {
