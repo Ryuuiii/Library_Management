@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css';
 import AdminForm from '../../components/Forms/AdminForm';
-import { toast } from 'react-toastify';
 
 
 const Dashboard = () => {
@@ -293,40 +292,40 @@ const Dashboard = () => {
         />
       )}
 
-{isTransactionFormOpen && (
-  <TransactionForm
-    onClose={() => setIsTransactionFormOpen(false)}
-    mode={formMode}
-    formData={selectedTransaction}
-    onSubmit={async (transactionData) => {
-      if (formMode === "edit") {
-        handleEditTransaction(selectedTransaction.TransactionID, transactionData);
-      } else {
-        // Add Transaction Logic
-        try {
-          const response = await fetch("http://localhost/api/addTransaction.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(transactionData),
-          });
-          const result = await response.json();
-          if (response.ok) {
-            alert(result.message || "Transaction added successfully");
-            fetchRecentTransactions(); // Refresh the transaction list
-          } else {
-            alert(result.error || "Failed to add transaction");
-          }
-        } catch (error) {
-          console.error("Error adding transaction:", error);
-          alert("An error occurred while adding the transaction");
-        }
-      }
-      setIsTransactionFormOpen(false);
-    }}
-  />
-)}
+      {isTransactionFormOpen && (
+        <TransactionForm
+          onClose={() => setIsTransactionFormOpen(false)}
+          mode={formMode}
+          initialData={selectedTransaction}
+          onSubmit={async (transactionData) => {
+            if (formMode === "edit") {
+              handleEditTransaction(selectedTransaction.TransactionID, transactionData);
+            } else {
+              // Add Transaction Logic
+              try {
+                const response = await fetch("http://localhost/api/addTransaction.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(transactionData),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                  toast.success(result.message || "Transaction added successfully");
+                  fetchRecentTransactions(); // Refresh the transaction list
+                } else {
+                  toast.error(result.error || "Failed to add transaction");
+                }
+              } catch (error) {
+                console.error("Error adding transaction:", error);
+                toast.error("An error occurred while adding the transaction");
+              }
+            }
+            setIsTransactionFormOpen(false);
+          }}
+        />
+      )}
 
       {isBorrowerFormOpen && (
         <BorrowerForm

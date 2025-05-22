@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ALayout from "../../components/Layout/ALayout";
 import TransactionTable from "../../components/Table/TransactionTable";
 import ActionButton from "../../components/ActionButtons/ActionButton";
 import { IoMdSearch } from "react-icons/io";
-import "./Transactions.css";
+import { toast } from "react-toastify";
 import Pagination from "../../components/Pagination/Pagination";
 import TransactionForm from "../../components/Forms/TransactionForm";
+import "./Transactions.css";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -16,7 +17,6 @@ const Transactions = () => {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null); // for editing
   const [formMode, setFormMode] = useState("add"); // add or edit
-  const [formData, setFormData] = useState(null);
   
   const fetchTransactions = async () => {
     try {
@@ -53,12 +53,12 @@ const Transactions = () => {
         throw new Error(data.error || "Unknown error");
       }
   
-      alert("Transaction applied successfully!");
+      toast.success("Transaction applied successfully!");
   
       fetchTransactions();
     } catch (error) {
       console.error("Failed to add transaction:", error.message);
-      alert("Failed to apply transaction: " + error.message);
+      toast.error("Failed to apply transaction: " + error.message);
     }
   };
   
@@ -79,18 +79,18 @@ const Transactions = () => {
       if (!response.ok) {
         const errorData = await response.text(); // Read the raw response
         console.error("Error Response:", errorData);
-        alert("Failed to update transaction. Check the backend for errors.");
+        toast.error("Failed to update transaction. Check the backend for errors.");
         return;
       }
 
       const result = await response.json();
       console.log("Edit Transaction Response:", result);
 
-      alert(result.message || "Transaction updated successfully");
+      toast.success(result.message || "Transaction updated successfully");
       fetchTransactions(); // Refresh the transactions list
     } catch (error) {
       console.error("Error updating transaction:", error);
-      alert("An error occurred while updating the transaction");
+      toast.error("An error occurred while updating the transaction");
     }
   };
 
@@ -111,18 +111,18 @@ const Transactions = () => {
       console.log("Delete Transaction Response:", result);
 
       if (response.ok) {
-        alert(result.message || "Transaction deleted successfully");
+        toast.success(result.message || "Transaction deleted successfully");
         setTransactions((prevTransactions) =>
           prevTransactions.filter(
             (transaction) => transaction.TransactionID !== transactionID
           )
         );
       } else {
-        alert(result.error || "Failed to delete transaction");
+        toast.error(result.error || "Failed to delete transaction");
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
-      alert("An error occurred while deleting the transaction");
+      toast.error("An error occurred while deleting the transaction");
     }
   };
 
@@ -179,31 +179,31 @@ const Transactions = () => {
       </div>
 
       {isTransactionFormOpen && (
-  <TransactionForm
-    onClose={() => setIsTransactionFormOpen(false)}
-    mode={formMode}
-    initialData={selectedTransaction}
-    onSubmit={(formData) => {
-      const formattedData = {
-        transactionID: formData.transactionID,
-        bookID: formData.bookID || "",
-        borrowerID: formData.borrowerID || "",
-        transactionType: formData.transactionType || "",
-        status: formData.status || "",
-        borrowDate: formData.borrowDate || "",
-        dueDate: formData.dueDate || "",
-        returnDate: formData.returnDate || null
-      };
-    
-      if (formMode === "edit") {
-        handleEditTransaction(selectedTransaction.TransactionID, formattedData);
-      } else {
-        handleAddTransaction(formattedData);
-      }
-      setIsTransactionFormOpen(false);
-    }}
-  />
-)}
+        <TransactionForm
+          onClose={() => setIsTransactionFormOpen(false)}
+          mode={formMode}
+          initialData={selectedTransaction}
+          onSubmit={(formData) => {
+            const formattedData = {
+              transactionID: formData.transactionID,
+              bookID: formData.bookID || "",
+              borrowerID: formData.borrowerID || "",
+              transactionType: formData.transactionType || "",
+              status: formData.status || "",
+              borrowDate: formData.borrowDate || "",
+              dueDate: formData.dueDate || "",
+              returnDate: formData.returnDate || null
+            };
+          
+            if (formMode === "edit") {
+              handleEditTransaction(selectedTransaction.TransactionID, formattedData);
+            } else {
+              handleAddTransaction(formattedData);
+            }
+            setIsTransactionFormOpen(false);
+          }}
+        />
+      )}
     </ALayout>
   );
 };

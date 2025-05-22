@@ -114,23 +114,16 @@ const AdminForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
           </form>
         </div>
       </div>
+      
       {showResultModal && (
-        <div className="modal-overlay">
-          <div className="modal-content result-modal">
-            <h3>✅ Admin Created Successfully</h3>
-            <p><strong>Login ID:</strong> {createdLoginID}</p>
-            <p><strong>Temporary Password:</strong> {generatedPassword}</p>
-            <button
-              className="submit-btn"
-              onClick={() => {
-                setShowResultModal(false);
-                onClose();
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <AdminModal
+          onClose={() => {
+            setShowResultModal(false);
+            onClose();
+          }}
+          loginID={createdLoginID}
+          tempPassword={generatedPassword}
+        />
       )}
     </>
   );

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css';
-import { toast } from "react-toastify";
 
 const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
   const [formData, setFormData] = useState({
@@ -19,17 +18,17 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setFormData({
-        transactionID: initialData.transactionID || "",
-        borrowerID: initialData.borrowerID || "",
-        bookID: initialData.bookID || "",
-        transactionType: initialData.transactionType || "",
-        borrowDate: initialData.borrowDate || "",
-        dueDate: initialData.dueDate || "",
-        returnDate: initialData.returnDate || "",
-        status: initialData.status || "",
+        transactionID: initialData.transactionID || initialData.TransactionID || "",
+        borrowerID: initialData.borrowerID || initialData.BorrowerID || "",
+        bookID: initialData.bookID || initialData.BookID || "",
+        transactionType: initialData.transactionType || initialData.TransactionType || "",
+        borrowDate: initialData.borrowDate || initialData.BorrowDate || "",
+        dueDate: initialData.dueDate || initialData.DueDate || "",
+        returnDate: initialData.returnDate || initialData.ReturnDate || "",
+        status: initialData.status || initialData.Status || "",
       });
     }
-  }, []);
+  }, [initialData, mode]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import ALayout from '../../components/Layout/ALayout';
 import BookTable from '../../components/Table/BookTable';
 import ActionButton from '../../components/ActionButtons/ActionButton';
@@ -7,7 +7,6 @@ import Pagination from '../../components/Pagination/Pagination';
 import { toast } from 'react-toastify';
 import { IoMdSearch } from 'react-icons/io';
 import './Books.css';
-import { toast } from 'react-toastify';
 
 const Books = () => {
   const [books, setBooks] = useState([]);
@@ -135,7 +134,8 @@ const Books = () => {
   };
 
   const openEditForm = (book) => {
-    console.log("Editing book:", book); // Debugging
+    console.log("Editing book:", book); 
+    setIsEditMode(true);// Debugging
     setCurrentBook({
       bookID: book.bookID,
       title: book.title,
@@ -210,10 +210,10 @@ const Books = () => {
         </header>
 
         <BookTable
-  books={books}
-  onEditBook={(book) => openEditForm(book)}
-  onDeleteBook={(bookID) => handleDeleteBook(bookID)}
-/>
+          books={books}
+          onEditBook={(book) => openEditForm(book)}
+          onDeleteBook={(bookID) => handleDeleteBook(bookID)}
+        />
 
         <Pagination
           currentPage={currentPage}
@@ -223,20 +223,21 @@ const Books = () => {
       </div>
 
       {isBookOpen && (
-  <BookForm
-  initialData={currentBook}
-  mode={currentBook ? 'edit' : 'add'}
-  onClose={() => setIsBookOpen(false)}
-  onSubmit={(formData) => {
-    if (currentBook) {
-      handleEditBook(currentBook.bookID, formData); // <-- important!
-    } else {
-      handleAddBook(formData); // <-- also important!
-    }
-    setIsBookOpen(false);
-  }}
-/>
-)}
+        <BookForm
+        initialData={currentBook}
+        mode={isEditMode ? 'edit' : 'add'}
+        onClose={() => {setIsBookOpen(false); setIsEditMode(false);}}
+        onSubmit={(formData) => {
+          if (currentBook) {
+            handleEditBook(currentBook.bookID, formData); 
+          } else {
+            handleAddBook(formData); 
+          }
+          setIsBookOpen(false);
+          
+        }}
+      />
+      )}
     </ALayout>
   );
 };

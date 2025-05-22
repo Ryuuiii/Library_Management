@@ -2,7 +2,6 @@ import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import './FormStyles.css';
-import { toast } from 'react-toastify';
 
 
 const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
@@ -163,24 +162,16 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
       </div>
 
       {showResultModal && (
-  <div className="modal-overlay">
-    <div className="modal-content result-modal">
-      <h3>✅ Borrower Added Successfully</h3>
-      <p><strong>Login ID:</strong> {createdLoginID}</p>
-      <p><strong>Temporary Password:</strong> {generatedPassword}</p>
-      <button
-        className="submit-btn"
-        onClick={() => {
-          setShowResultModal(false);
-          onSubmit(formData);
-          onClose();
-        }}
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
+        <BorrowerModal
+          onClose={() => {
+            setShowResultModal(false);
+            onSubmit(formData);
+            onClose();
+          }}
+          loginID={createdLoginID}
+          tempPassword={generatedPassword}
+        />
+      )}
     </div>
 
     
