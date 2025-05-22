@@ -50,17 +50,17 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
     setGeneratedPassword(result.defaultPassword);
     setShowResultModal(true);
   } else {
-    alert(result.message || "Borrower updated successfully");
+    toast.success(result.message || "Borrower updated successfully");
     onSubmit(formData);
     onClose();
   }
 
     } else {
-      alert(result.error || (isEdit ? "Failed to update borrower" : "Failed to add borrower"));
+      toast.error(result.error || (isEdit ? "Failed to update borrower" : "Failed to add borrower"));
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("An error occurred while submitting the form.");
+    toast.error("An error occurred while submitting the form.");
   }
 };
 

@@ -62,14 +62,14 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
       console.log("Parsed Response:", result); // Debugging
   
       if (response.ok) {
-        alert(result.message || (isEdit ? "Book updated successfully" : "Book added successfully"));
+        toast.success(result.message || (isEdit ? "Book updated successfully" : "Book added successfully"));
         onClose();
       } else {
-        alert(result.error || (isEdit ? "Failed to update book" : "Failed to add book"));
+        toast.error(result.error || (isEdit ? "Failed to update book" : "Failed to add book"));
       }
     } catch (error) {
       console.error("Error submitting book form:", error);
-      alert("An error occurred while submitting the book form");
+      toast.error("An error occurred while submitting the book form");
     }
   };
   
