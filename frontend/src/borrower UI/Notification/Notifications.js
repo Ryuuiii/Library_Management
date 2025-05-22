@@ -7,6 +7,9 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const loginID = localStorage.getItem('loginID');
+
+
   const fetchNotifications = async () => {
   try {
     const response = await fetch('http://localhost/Library_Management/backend/api/Notifications.php', {
@@ -14,7 +17,7 @@ const Notifications = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ loginID: 'S001' })
+      body: JSON.stringify({ loginID })
     });
 
     if (!response.ok) {

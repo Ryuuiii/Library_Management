@@ -53,10 +53,8 @@ const Transactions = () => {
         throw new Error(data.error || "Unknown error");
       }
   
-      // ✅ Show success alert
       alert("Transaction applied successfully!");
   
-      // Optionally refresh transaction list
       fetchTransactions();
     } catch (error) {
       console.error("Failed to add transaction:", error.message);

@@ -38,11 +38,13 @@ const Login = () => {
         const role = data.role?.toLowerCase();
   
         if (role === 'admin') {
-          localStorage.setItem('userRole', role);
-          navigate('/admin/profile');
-        } else if (role === 'borrower') {
-          localStorage.setItem('userRole', role);
-          navigate('/borrower/profile');
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('loginID', data.loginID); // ✅ Store loginID
+  navigate('/admin/profile');
+} else if (role === 'borrower') {
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('loginID', data.loginID); // ✅ Store loginID
+  navigate('/borrower/profile');
           } else {
           setLoginError('Unknown role.');
         }

@@ -12,8 +12,8 @@ error_log("Filter: " . $filter);
 
 if ($filter === '7days') {
     $activity_query = "
-        SELECT 
-            WEEK(activity_date) AS week,
+        SELECT  
+            activity_date,
             SUM(CASE WHEN TransactionType = 'Borrow Book' THEN 1 ELSE 0 END) AS Borrowed,
             SUM(CASE WHEN TransactionType = 'Return Book' THEN 1 ELSE 0 END) AS Returned
         FROM (
@@ -27,8 +27,8 @@ if ($filter === '7days') {
             FROM transaction
             WHERE ReturnDate >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
         ) AS activity
-        GROUP BY WEEK(activity_date)
-        ORDER BY WEEK(activity_date) ASC;
+        GROUP BY activity_date
+        ORDER BY activity_date ASC;
     ";
 
     $result = $conn->query($activity_query);
@@ -41,8 +41,9 @@ if ($filter === '7days') {
 
     $finalData = [];
     while ($row = $result->fetch_assoc()) {
+        $dayName = date('l', strtotime($row['activity_date'])); // Get day name (e.g., Monday)
         $finalData[] = [
-            'week' => $row['week'],
+            'name' => $dayName,
             'Borrowed' => (int)$row['Borrowed'],
             'Returned' => (int)$row['Returned']
         ];
@@ -91,8 +92,22 @@ if (!$result) {
 
 $data = [];
 while ($row = $result->fetch_assoc()) {
-    $data[] = $row;
+    if ($filter === '30days') {
+        $data[] = [
+            'name' => 'Week ' . $row['week'],
+            'Borrowed' => (int)$row['Borrowed'],
+            'Returned' => (int)$row['Returned']
+        ];
+    } elseif ($filter === '3months') {
+        $monthName = date("F", mktime(0, 0, 0, $row['month'], 1));
+        $data[] = [
+            'name' => $monthName,
+            'Borrowed' => (int)$row['Borrowed'],
+            'Returned' => (int)$row['Returned']
+        ];
+    }
 }
+
 
 
 echo json_encode($data);

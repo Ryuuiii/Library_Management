@@ -226,7 +226,7 @@ const Dashboard = () => {
                 <LineChart data={filteredData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
-                    dataKey="name"
+                    dataKey="week"
                     label={{
                       value: activeFilter === '3months' ? 'Months' : activeFilter === '30days' ? 'Weeks' : 'Days',
                       position: 'outsideBottomCenter',
