@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css'
 import { toast } from 'react-toastify';
@@ -6,15 +7,15 @@ import { toast } from 'react-toastify';
 
 const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
   const [formData, setFormData] = useState({
-    bookID: "",
-    title: "",
-    author: "",
-    publishedYear: "",
-    subject: "",
-    programID: "",
-    yearLevel: "",
-    availableCopies: "",
-  });
+  bookID: initialData.bookID || "",
+  title: initialData.title || "",
+  author: initialData.author || "",
+  publishedYear: initialData.publishedYear || "",
+  subject: initialData.subject || "",
+  programID: initialData.programID || "",
+  yearLevel: initialData.yearLevel || "",
+  availableCopies: initialData.availableCopies || "",
+});
 
   useEffect(() => {
   if (mode === 'edit' && initialData) {
@@ -38,7 +39,7 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    console.log("Form Data:", formData);
+    console.log("Form Data:", formData); // Debugging
   
     try {
       const isEdit = mode === "edit";
@@ -56,10 +57,10 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
       });
   
       const text = await response.text();
-      console.log("Raw Response:", text); // Debugging
+      console.log("Raw Response:", text); 
   
       const result = JSON.parse(text);
-      console.log("Parsed Response:", result); // Debugging
+      console.log("Parsed Response:", result); 
   
       if (response.ok) {
         toast.success(result.message || (isEdit ? "Book updated successfully" : "Book added successfully"));

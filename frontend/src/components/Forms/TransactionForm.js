@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css';
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => {
   const [formData, setFormData] = useState({
@@ -35,13 +35,17 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
     e.preventDefault();
   
     // Ensure returnDate is null if empty
-    const sanitizedFormData = {
-      ...formData,
-      returnDate: formData.returnDate,
+    const sanitizedFormData = {...formData,returnDate: formData.returnDate,
     };
   
-    console.log("Form Data Submitted:", sanitizedFormData); // Debugging
-    onSubmit(sanitizedFormData); // Pass the sanitized form data to the parent component
+    console.log("Form Data Submitted:", sanitizedFormData); 
+    onSubmit(sanitizedFormData); 
+
+    if(mode === "edit") {
+      toast.success("Transaction updated successfully");
+    } else{
+      toast.success("Transaction added successfully");
+    }
   };
 
   const handleChange = (e) => {

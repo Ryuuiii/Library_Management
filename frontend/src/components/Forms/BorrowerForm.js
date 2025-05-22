@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 import './FormStyles.css';
 import { toast } from 'react-toastify';
 
@@ -20,7 +21,6 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
- const [isSubmitting, setIsSubmitting] = useState(false);
   
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -41,7 +41,7 @@ const BorrowerForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) => 
     });
 
     const text = await response.text();
-    console.log("Raw Response:", text); // Optional debugging
+    console.log("Raw Response:", text); 
     const result = JSON.parse(text);
 
     if (response.ok) {

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 import './FormStyles.css';
 import { toast } from 'react-toastify';
 
