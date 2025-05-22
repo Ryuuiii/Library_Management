@@ -21,7 +21,7 @@ const Borrower = () => {
   const [formMode, setFormMode] = useState('add');
 
   
-    const fetchBorrowers = useCallback(async () => {
+  const fetchBorrowers = useCallback(async () => {
   try {
     const response = await fetch(
       `http://localhost/api/borrowers.php?search=${searchQuery}&type=${selectedType}&yearLevel=${selectedYearLevel}&page=${currentPage}`,
@@ -60,18 +60,18 @@ useEffect(() => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message || 'Borrower updated successfully');
+        toast.success(result.message || 'Borrower updated successfully');
         setBorrowers((prevBorrowers) =>
           prevBorrowers.map((borrower) =>
             borrower.BorrowerID === borrowerID ? { ...borrower, ...updatedData } : borrower
           )
         );
       } else {
-        alert(result.error || 'Failed to update borrower');
+        toast.error(result.error || 'Failed to update borrower');
       }
     } catch (error) {
       console.error('Error updating borrower:', error);
-      alert('An error occurred while updating the borrower');
+      toast.error('An error occurred while updating the borrower');
     }
   };
 
@@ -87,16 +87,16 @@ useEffect(() => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message || 'Borrower deleted successfully');
+        toast.success(result.message || 'Borrower deleted successfully');
         setBorrowers((prevBorrowers) =>
           prevBorrowers.filter((borrower) => borrower.BorrowerID !== borrowerID)
         );
       } else {
-        alert(result.error || 'Failed to delete borrower');
+        toast.error(result.error || 'Failed to delete borrower');
       }
     } catch (error) {
       console.error('Error deleting borrower:', error);
-      alert('An error occurred while deleting the borrower');
+      toast.error('An error occurred while deleting the borrower');
     }
   };
 

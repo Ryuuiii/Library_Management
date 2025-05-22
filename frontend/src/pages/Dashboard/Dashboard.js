@@ -146,19 +146,19 @@ const Dashboard = () => {
       if (!response.ok) {
         const errorData = await response.text();
         console.error("Error Response:", errorData);
-        alert("Failed to update transaction. Check the backend for errors.");
+        toast.error("Failed to update transaction. Check the backend for errors.");
         return;
       }
   
       const result = await response.json();
       console.log("Edit Transaction Response:", result);
   
-      alert(result.message || "Transaction updated successfully");
+      toast.success(result.message || "Transaction updated successfully");
   
       fetchRecentTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
-      alert("An error occurred while updating the transaction");
+      toast.error("An error occurred while updating the transaction");
     }
   };
 
@@ -180,18 +180,18 @@ const Dashboard = () => {
       console.log("Delete Transaction Response:", result);
 
       if (response.ok) {
-        alert(result.message || "Transaction deleted successfully");
+        toast.success(result.message || "Transaction deleted successfully");
         setTransactions((prevTransactions) =>
           prevTransactions.filter(
             (transaction) => transaction.TransactionID !== transactionID
           )
         );
       } else {
-        alert(result.error || "Failed to delete transaction");
+        toast.error(result.error || "Failed to delete transaction");
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
-      alert("An error occurred while deleting the transaction");
+      toast.error("An error occurred while deleting the transaction");
     }
   };
 
