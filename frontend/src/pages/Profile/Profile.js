@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-
+import AdminModal from '../../components/Modal/AdminModal';
+import BorrowerModal from '../../components/Modal/BorrowerModal';
 import ALayout from '../../components/Layout/ALayout';
 import './Profile.css';
 
@@ -151,7 +152,6 @@ const Profile = () => {
             </div>
           </form>
         )}
-
       </main>
     </ALayout>
   );
