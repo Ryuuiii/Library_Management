@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css';
 
@@ -14,8 +14,8 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
     status: "",
   });
 
-  React.useEffect(() => {
-    if (mode === 'edit' && initialData) {
+  useEffect(() => {
+    if (mode === "edit" && initialData) {
       setFormData({
         transactionID: initialData.transactionID || "",
         borrowerID: initialData.borrowerID || "",
@@ -27,7 +27,7 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
         status: initialData.status || "",
       });
     }
-  }, [initialData, mode]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -144,9 +144,9 @@ const TransactionForm = ({ onSubmit, onClose, initialData = {}, mode = 'add' }) 
               required
             >
               <option value="">Select Status</option>
-              <option value="borrowed">Borrowed</option>
-              <option value="returned">Returned</option>
-              <option value="overdue">Overdue</option>
+              <option value="Borrowed">Borrowed</option>
+              <option value="Returned">Returned</option>
+              <option value="Overdue">Overdue</option>
             </select>
           </div>
 

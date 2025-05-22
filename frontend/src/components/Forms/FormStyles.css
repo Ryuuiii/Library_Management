@@ -126,3 +126,22 @@
 .full-length{
   grid-column: span 2 ;
 }
+
+
+.result-modal h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.result-modal {
+  text-align: center;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+.result-modal .submit-btn {
+  margin-top: 1rem;
+}

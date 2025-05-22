@@ -20,6 +20,9 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState('7days'); 
   const [filteredData, setFilteredData] = useState([]); 
   const [transactions, setTransactions] = useState([]);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [formMode, setFormMode] = useState("add"); 
+  const [formData, setFormData] = useState(null);
   const [bookStats, setBookStats] = useState({
     total: 0,
     borrowed: 0,
@@ -81,7 +84,6 @@ const Dashboard = () => {
     fetchBookStats();
   }, []);
 
-  // ✅ FETCH CHART DATA BASED ON FILTER
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -102,34 +104,93 @@ const Dashboard = () => {
     fetchChartData();
   }, [activeFilter]);
 
-  // ✅ FETCH RECENT TRANSACTIONS
-  useEffect(() => {
-    const fetchRecentTransactions = async () => {
-      try {
-        const res = await fetch("http://localhost/api/recent_transaction.php?mode=recent");
-        const data = await res.json();
-        console.log('Recent Transactions:', data);
-
-        if (res.ok) {
-          setTransactions(data.transactions || []);
-        } else {
-          console.error('Failed to fetch transactions:', data.error);
-        }
-      } catch (error) {
-        console.error("Failed to fetch transactions:", error);
+  const fetchRecentTransactions = async () => {
+    try {
+      const res = await fetch("http://localhost/api/recent_transaction.php?mode=recent");
+      const data = await res.json();
+      console.log('Recent Transactions:', data);
+  
+      if (res.ok) {
+        setTransactions(data.transactions || []);
+      } else {
+        console.error('Failed to fetch transactions:', data.error);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+    }
+  };
+  
+  useEffect(() => {
     fetchRecentTransactions();
   }, []);
   
-
-  const handleEditTransaction = () => {
-    // Implement this logic if needed
+  const handleEditTransaction = async (transactionID, updatedTransaction) => {
+    console.log("Transaction Data Sent to Backend:", updatedTransaction);
+  
+    if (JSON.stringify(updatedTransaction) === JSON.stringify(transactions.find(t => t.TransactionID === transactionID))) {
+      console.log("No changes made to the transaction.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost/api/edittransaction.php?id=${transactionID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTransaction),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Error Response:", errorData);
+        alert("Failed to update transaction. Check the backend for errors.");
+        return;
+      }
+  
+      const result = await response.json();
+      console.log("Edit Transaction Response:", result);
+  
+      alert(result.message || "Transaction updated successfully");
+  
+      fetchRecentTransactions();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      alert("An error occurred while updating the transaction");
+    }
   };
 
-  const handleDeleteTransaction = () => {
-    // Implement this logic if needed
+
+  const handleDeleteTransaction = async (transactionID) => {
+    if (!window.confirm("Are you sure you want to delete this transaction?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost/api/deleteTransaction.php?id=${transactionID}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const result = await response.json();
+      console.log("Delete Transaction Response:", result);
+
+      if (response.ok) {
+        alert(result.message || "Transaction deleted successfully");
+        setTransactions((prevTransactions) =>
+          prevTransactions.filter(
+            (transaction) => transaction.TransactionID !== transactionID
+          )
+        );
+      } else {
+        alert(result.error || "Failed to delete transaction");
+      }
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      alert("An error occurred while deleting the transaction");
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -206,10 +267,14 @@ const Dashboard = () => {
         <section className="recent-transactions">
           <h2><BsFileEarmarkBarGraphFill className="recenTrans-icon" />Recent Transactions</h2>
           <TransactionTable
-            transactions={transactions}
-            onDeleteTransaction={handleDeleteTransaction}
-            onEditTransaction={handleEditTransaction}
-          />
+        transactions={transactions}
+        onDeleteTransaction={handleDeleteTransaction}
+        onEditClick={(transaction) => {
+          setSelectedTransaction(transaction);
+          setFormMode("edit");
+          setIsTransactionFormOpen(true);
+          }}
+        />
         </section>
       </div>
 
@@ -224,16 +289,22 @@ const Dashboard = () => {
         />
       )}
 
-      {isTransactionFormOpen && (
-        <TransactionForm
-          onClose={() => setIsTransactionFormOpen(false)}
-          mode="add"
-          onSubmit={(newTransaction) => {
-            console.log('Transaction: ', newTransaction);
-            setIsTransactionFormOpen(false);
-          }}
-        />
-      )}
+{isTransactionFormOpen && (
+  <TransactionForm
+    onClose={() => setIsTransactionFormOpen(false)}
+    mode={formMode} // ✅ Use actual form mode
+    formData={selectedTransaction} // ✅ Pre-fill form data for editing
+    onSubmit={(transactionData) => {
+      if (formMode === "edit") {
+        handleEditTransaction(selectedTransaction.TransactionID, transactionData);
+      } else {
+        console.log("Transaction: ", transactionData);
+        // addTransaction logic here if needed
+      }
+      setIsTransactionFormOpen(false);
+    }}
+  />
+)}
 
       {isBorrowerFormOpen && (
         <BorrowerForm

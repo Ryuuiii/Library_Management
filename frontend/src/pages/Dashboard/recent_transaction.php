@@ -6,7 +6,6 @@ require_once 'db.php';
 
 $mode = $_GET['mode'] ?? 'recent';
 
-// Debugging: Log the mode value
 error_log("Mode: " . $mode);
 
 if ($mode === 'recent') {

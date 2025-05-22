@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import AdminModal from '../../components/Modal/AdminModal';
-import BorrowerModal from '../../components/Modal/BorrowerModal';
+
 import ALayout from '../../components/Layout/ALayout';
 import './Profile.css';
+
+
 
 
 const Profile = () => {
@@ -27,31 +28,89 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log('Current profileData:', profileData);
+console.log('Submitting change for id:', profileData.loginID);
+console.log('Sending password change for loginID:', profileData.loginID);
 
-    const { newPassword, confirmPassword } = formData;
 
 
-    if (newPassword !== confirmPassword) {
-      setError('New password and confirm password do not match.');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
+  const { currentPassword, newPassword, confirmPassword } = formData;
 
-    // Access form values (you should store them in state with useState)
-    setError('');
-    console.log("Submitting password change");
-
+  if (newPassword !== confirmPassword) {
+    setError('New password and confirm password do not match.');
+    setTimeout(() => setError(''), 3000);
+    return;
+  }
   
-    setShowEditPass(false);
+  setError('');
+  try {
+    const res = await fetch('http://localhost/api/change_password.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        loginID: profileData.loginID,
+        currentPassword,
+        newPassword
+      })
+    });
+    const data = await res.json();
+    if (data.error) {
+      setError(data.error);
+      setTimeout(() => setError(''), 3000);
+    } else {
+      alert('Password changed successfully!');
+      setShowEditPass(false);
+      setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    }
+  } catch (err) {
+    setError('Failed to change password.');
+    setTimeout(() => setError(''), 3000);
+  }
+};
+
+  const [profileData, setProfileData] = useState({
+    loginID: '',
+    id: '',
+    name: '',
+    role: '',
+    password: ''
+  });
+  
+  useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch('http://localhost/api/admin_profile.php', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!data.error) {
+        setProfileData({
+          loginID: data.loginID,  // make sure this is here
+          id: data.id,
+          name: data.name,
+          role: data.role,
+          password: ''
+        });
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  fetchProfile();
+}, []);
+
 
   return (
     <ALayout title="Profile">
       <main className="admin-profile">
         <div className="header">
-          <h1>Welcome To Libsync, John Smith</h1>
+          <h1>Welcome To Libsync {profileData.name}</h1>
           <button className="edit-button" onClick={handleForm}>
             <CiEdit size={20} /> Edit Password
           </button>
@@ -63,17 +122,17 @@ const Profile = () => {
           <div className="profile-view">
           <div className="profile-field">
             <label>Admin ID:</label>
-            <p>A001</p>
+            <p>{profileData.id}</p>
           </div>
 
           <div className="profile-field">
             <label>Name:</label>
-            <p>John Smith</p>
+            <p>{profileData.name}</p>
           </div>
 
           <div className="profile-field">
             <label>Role:</label>
-            <p>System Administrator</p>
+            <p>{profileData.role}</p>
           </div>
 
           <div className="profile-field">
@@ -88,12 +147,12 @@ const Profile = () => {
           <form className="profile-edit" onSubmit={handleSubmit}>
             <div className="profile-field">
               <label className="label" htmlFor="name">Name:</label>
-              <input type="text" name="name" value="John Smith" disabled/>
+              <input type="text" name="name" value={profileData.name} disabled/>
             </div>
 
             <div className="profile-field">
               <label className="label" htmlFor="role">Role:</label>
-              <input type="text" name="role" value="System Administrator" disabled />
+              <input type="text" name="role" value={profileData.role} disabled />
             </div>
 
             <div className="profile-field">

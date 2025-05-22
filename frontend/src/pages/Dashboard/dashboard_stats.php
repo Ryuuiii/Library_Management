@@ -19,11 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    // Total books
     $totalStmt = $conn->query("SELECT SUM(AvailableCopies) AS total FROM books");
 $totalBooks = (int) ($totalStmt->fetch_assoc()['total'] ?? 0);
 
-// Count how many are currently borrowed
 $transactionStmt = $conn->query("
     SELECT 
         COUNT(CASE WHEN Status = 'Borrowed' THEN 1 END) AS borrowed,
@@ -34,7 +32,7 @@ $row = $transactionStmt->fetch_assoc();
 
 $borrowed = (int) ($row['borrowed'] ?? 0);
 $overdue = (int) ($row['overdue'] ?? 0);
-$available = max(0, $totalBooks - $borrowed); // subtract borrowed copies from total copies
+$available = max(0, $totalBooks - $borrowed);
 
 echo json_encode([
     'total' => $totalBooks,

@@ -19,16 +19,11 @@ const Books = () => {
         `http://localhost/Library_Management/backend/api/BookBorrower.php?search=${searchQuery}&yearLevel=${selectedYearLevel}&program=${selectedProgram}&page=${currentPage}`
       );
       const data = await response.json();
-
+      console.log("Total Pages:", data.totalPages);
       if (data.books) {
-        
-        const updatedBooks = data.books.map(book => ({
-          ...book,
-          AvailableCopies: Math.floor(Math.random() * 3) + 1, 
-        }));
-        setBooks(updatedBooks);
-        setTotalPages(data.totalPages);
-      }
+  setBooks(data.books);
+  setTotalPages(data.totalPages);
+}
     } catch (error) {
       console.error("Error fetching books:", error);
     }
@@ -39,7 +34,7 @@ const Books = () => {
   }, [searchQuery, selectedProgram, selectedYearLevel, currentPage]);
 
   return (
-    <BLayout title='Book Management'>
+    <BLayout title='Book Catalog'>
       <div className='books-content'>
         <header className='bookpage-header'>
           <div className='book-filter'>
@@ -85,9 +80,9 @@ const Books = () => {
   }}
 >
   <option value="all">All Program</option>
-  <option value="CS01">BSCS</option>
-  <option value="IT01">BSIT</option>
-  <option value="EMC01">BSEMC</option>
+  <option value="BSCS">BSCS</option>
+  <option value="BSIT">BSIT</option>
+  <option value="BSEMC">BSEMC</option>
 </select>
 
           </div>
@@ -140,6 +135,7 @@ const Books = () => {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={(page) => setCurrentPage(page)}
+          
         />
       </div>
     </BLayout>
