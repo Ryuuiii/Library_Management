@@ -65,14 +65,14 @@ const Books = () => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message || 'Book added successfully');
+        toast.success(result.message || 'Book added successfully');
         fetchBooks();
       } else {
-        alert(result.error || 'Failed to add book');
+        toast.error(result.error || 'Failed to add book');
       }
     } catch (error) {
       console.error('Error adding book:', error);
-      alert('An error occurred while adding the book');
+      toast.error('An error occurred while adding the book');
     }
   };
 
@@ -92,19 +92,19 @@ const Books = () => {
       const result = JSON.parse(text);
   
       if (response.ok) {
-        alert(result.message || "Book updated successfully");
-  
+        toast.success(result.message || 'Book updated successfully');
+        
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
             book.bookID === bookID ? { ...book, ...updatedData } : book
           )
         );
       } else {
-        alert(result.error || "Failed to update book");
+        toast.error(result.error || 'Failed to update book');
       }
     } catch (error) {
       console.error("Error updating book:", error);
-      alert("An error occurred while updating the book");
+      toast.error('An error occurred while updating the book');
     }
   };
 
@@ -121,14 +121,14 @@ const Books = () => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message || 'Book deleted successfully');
+        toast.success(result.message || 'Book deleted successfully');
         fetchBooks();
       } else {
-        alert(result.error || 'Failed to delete book');
+        toast.error(result.error || 'Failed to delete book');
       }
     } catch (error) {
       console.error('Error deleting book:', error);
-      alert('An error occurred while deleting the book');
+      toast.error('An error occurred while deleting the book');
     }
   };
 

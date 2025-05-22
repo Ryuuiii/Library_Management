@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Books from './pages/Books/Books'
@@ -12,6 +14,7 @@ import Notifications from './borrower UI/Notification/Notifications'
 function App() {
   return (
    <Router>
+    <ToastContainer position='bottom-right' autoClose={3000} theme='colored'/>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path='/login' element={<Login />} />

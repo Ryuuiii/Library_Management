@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+
 import ALayout from '../../components/Layout/ALayout';
 import './Profile.css';
 
@@ -210,7 +211,6 @@ console.log('Sending password change for loginID:', profileData.loginID);
             </div>
           </form>
         )}
-
       </main>
     </ALayout>
   );
