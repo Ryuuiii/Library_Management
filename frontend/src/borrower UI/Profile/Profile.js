@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import BLayout from '../../components/Layout/BLayout';
 import anon from '../../assets/anon.png';
 import './Profile.css';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
   const [isEditingPassword, setIsEditingPassword] = useState(false);

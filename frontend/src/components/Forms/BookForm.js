@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import './FormStyles.css'
+import { toast } from 'react-toastify';
+
 
 const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
   const [formData, setFormData] = useState({
@@ -15,8 +17,10 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
   });
 
   useEffect(() => {
-    if (initialData) {
-      setFormData({
+  if (mode === 'edit' && initialData) {
+    setFormData(prev => {
+      if (prev.bookID === initialData.bookID) return prev;
+      return {
         bookID: initialData.bookID || "",
         title: initialData.title || "",
         author: initialData.author || "",
@@ -25,15 +29,16 @@ const BookForm = ({onSubmit, onClose, initialData = {}, mode = 'add'}) => {
         programID: initialData.programID || "",
         yearLevel: initialData.yearLevel || "",
         availableCopies: initialData.availableCopies || "",
-      });
-    }
-  }, [initialData]);
+      };
+    });
+  }
+}, [initialData, mode]);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    console.log("Form Data:", formData); // Debugging
+    console.log("Form Data:", formData);
   
     try {
       const isEdit = mode === "edit";

@@ -6,6 +6,8 @@ import BorrowerTable from '../../components/Table/BorrowerTable';
 import Pagination from '../../components/Pagination/Pagination';
 import { IoMdSearch } from 'react-icons/io';
 import './Borrower.css';
+import { toast } from 'react-toastify';
+
 
 const Borrower = () => {
   const [borrowers, setBorrowers] = useState([]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BLayout from '../../components/Layout/BLayout';
 import './Notifications.css';
+import { toast } from 'react-toastify';
 
 const Notifications = () => {
   const [notificationsData, setNotificationsData] = useState([]);

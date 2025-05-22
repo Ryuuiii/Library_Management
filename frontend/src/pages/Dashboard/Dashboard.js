@@ -11,6 +11,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import './Dashboard.css';
 import AdminForm from '../../components/Forms/AdminForm';
+import { toast } from 'react-toastify';
+
 
 const Dashboard = () => {
   const [isBookFormOpen, setIsBookFormOpen] = useState(false);
@@ -292,14 +294,32 @@ const Dashboard = () => {
 {isTransactionFormOpen && (
   <TransactionForm
     onClose={() => setIsTransactionFormOpen(false)}
-    mode={formMode} // ✅ Use actual form mode
-    formData={selectedTransaction} // ✅ Pre-fill form data for editing
-    onSubmit={(transactionData) => {
+    mode={formMode}
+    formData={selectedTransaction}
+    onSubmit={async (transactionData) => {
       if (formMode === "edit") {
         handleEditTransaction(selectedTransaction.TransactionID, transactionData);
       } else {
-        console.log("Transaction: ", transactionData);
-        // addTransaction logic here if needed
+        // Add Transaction Logic
+        try {
+          const response = await fetch("http://localhost/api/addTransaction.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transactionData),
+          });
+          const result = await response.json();
+          if (response.ok) {
+            alert(result.message || "Transaction added successfully");
+            fetchRecentTransactions(); // Refresh the transaction list
+          } else {
+            alert(result.error || "Failed to add transaction");
+          }
+        } catch (error) {
+          console.error("Error adding transaction:", error);
+          alert("An error occurred while adding the transaction");
+        }
       }
       setIsTransactionFormOpen(false);
     }}

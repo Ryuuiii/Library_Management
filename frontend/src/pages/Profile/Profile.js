@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-
+import { toast } from 'react-toastify';
 import ALayout from '../../components/Layout/ALayout';
 import './Profile.css';
 
@@ -88,7 +88,7 @@ console.log('Sending password change for loginID:', profileData.loginID);
       const data = await res.json();
       if (!data.error) {
         setProfileData({
-          loginID: data.loginID,  // make sure this is here
+          loginID: data.loginID,  
           id: data.id,
           name: data.name,
           role: data.role,
